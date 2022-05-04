@@ -15,6 +15,7 @@ using Store.Infrastracture.Application;
 using Store.Persistence.EF;
 using Store.Persistence.EF.Categories;
 using Store.Services.Categories;
+using Store.Services.Categories.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,7 @@ namespace Store.RestAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Store.RestAPI", Version = "v1" });
             });
+
         }
         public void ConfigureContainer(ContainerBuilder builder)
         {

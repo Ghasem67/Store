@@ -1,5 +1,7 @@
-﻿using Store.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Store.Entities;
 using Store.Services.Goodses;
+using Store.Services.Goodses.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,32 +19,34 @@ namespace Store.Persistence.EF.Goodses
             _context = context;
         }
 
-        public void AddGoods(Goods goods)
+        public void Add(Goods goods)
         {
             _context.Add(goods);
         }
 
-        public void DeleteGoods(Goods goods)
+        public void Delete(Goods goods)
         {
-           _context.Remove(goods);
+            _context.Remove(goods);
         }
 
         public HashSet<ShowgoodsDTO> GetAll()
         {
-         return _context.Goods.Select(_=>new ShowgoodsDTO {CategoryName=_.Category.Title,
-             Cost=_.Cost,
-             GoodsCode=_.GoodsCode,
-             Inventory=_.Inventory,
-             MaxInventory=_.MaxInventory,
-             MinInventory=_.MinInventory,
-             Name=_.Name }).ToHashSet();
+            return _context.Goodses.Select(_ => new ShowgoodsDTO
+            {
+                CategoryName = _.Category.Title,
+                Cost = _.Cost,
+                GoodsCode = _.GoodsCode,
+                Inventory = _.Inventory,
+                MaxInventory = _.MaxInventory,
+                MinInventory = _.MinInventory,
+                Name = _.Name
+            }).ToHashSet();
         }
 
-        public Goods GetbyId(int id)
+        public Goods GetbyId(int goodsCode)
         {
-            return _context.Goods.FirstOrDefault(_ => _.Id.Equals(id));
+            return _context.Goodses.FirstOrDefault(_ => _.GoodsCode.Equals(goodsCode));
         }
 
-      
     }
 }

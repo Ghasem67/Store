@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Store.Entities
 {
-    public class Goods:Entity
+    public class Goods
     {
         public int GoodsCode { get; set; }
         public string Name { get; set; }

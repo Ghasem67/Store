@@ -23,7 +23,7 @@ namespace Store.Persistence.EF
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(GoodsEntityMap).Assembly);
         }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Goods> Goods { get; set; }
+        public DbSet<Goods> Goodses { get; set; }
         public DbSet<GoodsInput> GoodsInputs { get; set; }
         public DbSet<GoodsOutput> GoodsOutputs { get; set; }
     }

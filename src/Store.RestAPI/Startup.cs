@@ -1,3 +1,4 @@
+using Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Store.Infrastracture.Application;
+using Store.Persistence.EF;
+using Store.Persistence.EF.Categories;
+using Store.Services.Categories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +42,27 @@ namespace Store.RestAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Store.RestAPI", Version = "v1" });
             });
+        }
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterType<EFDataContext>()
+                .WithParameter("connectionString", Configuration["ConnectionString"])
+                 .AsSelf()
+                 .InstancePerLifetimeScope();
+
+            builder.RegisterAssemblyTypes(typeof(EFCategoryRepository).Assembly)
+                      .AssignableTo<Repository>()
+                      .AsImplementedInterfaces()
+                      .InstancePerLifetimeScope();
+
+            builder.RegisterAssemblyTypes(typeof(CategoryAppService).Assembly)
+                      .AssignableTo<Service>()
+                      .AsImplementedInterfaces()
+                      .InstancePerLifetimeScope();
+
+            builder.RegisterType<EFUnitOfWork>()
+                .As<UnitOfWork>()
+                .InstancePerLifetimeScope();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

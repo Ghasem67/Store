@@ -23,7 +23,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Store.RestAPI", "Store.Rest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Store.Test.Tools", "Store.Test.Tools\Store.Test.Tools.csproj", "{91E448D2-DF34-4DDB-B79D-A33DE4ADB4D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store.Specs", "Store.Specs\Store.Specs.csproj", "{D33DD88F-86D8-40E6-B816-B1C5326FA423}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Store.Specs", "Store.Specs\Store.Specs.csproj", "{D33DD88F-86D8-40E6-B816-B1C5326FA423}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6BDA6E21-2C15-4083-B717-3432FA7D9787}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

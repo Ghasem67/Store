@@ -35,7 +35,8 @@ namespace Store.Migrations
               .WithColumn("Inventory").AsInt32().NotNullable()
               .WithColumn("MinInventory").AsInt32().NotNullable()
               .WithColumn("MaxInventory").AsInt32().NotNullable()
-              .WithColumn("CategoryId").AsInt32().NotNullable().ForeignKey("FK_Goodses_Categories", "Categories","Id");
+              .WithColumn("CategoryId").AsInt32().NotNullable().ForeignKey("FK_Goodses_Categories", "Categories","Id")
+              .OnDelete(System.Data.Rule.Cascade);
              
         }
         private void CreateCategory()

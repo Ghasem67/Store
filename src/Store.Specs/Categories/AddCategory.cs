@@ -41,6 +41,7 @@ namespace Store.Specs.Categories
                 Title="لبنیات"
             };
             var _unitOfWork = new EFUnitOfWork(_dataContext);
+          
             CategoryRepository _categoryRepository=new EFCategoryRepository(_dataContext);
             CategoryService _sut = new CategoryAppService(_categoryRepository,
                 _unitOfWork);
@@ -49,7 +50,7 @@ namespace Store.Specs.Categories
         [Then("باید دسته بندی با عنوان 'لبنیات' وجود داشته باشد")]
         private void Then()
         {
-            var expect = _dataContext.Categories.FirstOrDefault();
+            var expect = _dataContext.Categories.OrderByDescending(_=>_.Id).FirstOrDefault();
             expect.Title.Should().Be("لبنیات");
         }
         [Fact]

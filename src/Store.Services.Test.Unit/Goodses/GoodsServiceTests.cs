@@ -106,7 +106,7 @@ namespace Store.Services.Test.Unit.Goodses
 
             };
             _context.Manipulate(_ => _.Add(Category));
-            Goods dto1 = new Goods
+            Goods good = new Goods
             {
                 CategoryId = _context.Categories.FirstOrDefault().Id,
                 Cost = 1000,
@@ -116,10 +116,11 @@ namespace Store.Services.Test.Unit.Goodses
                 MinInventory = 10,
                 Name = "شیر پگاه"
             };
-            _context.Manipulate(_ => _.Goodses.Add(dto1));
+            _context.Manipulate(_ => _.Goodses.Add(good));
             var Goods = _context.Goodses.First();
             _Sut.Delete(Goods.GoodsCode);
-            var expect = _context.Goodses.Should().HaveCount(0);
+            var expect = _context.Goodses.FirstOrDefault(_=>_.GoodsCode.Equals(good.GoodsCode));
+            expect.Should().BeNull();
         }
         [Fact]
         private void Get_gets_goods_properly()
@@ -127,7 +128,6 @@ namespace Store.Services.Test.Unit.Goodses
             Category Category = new Category
             {
                 Title = "لبنیات"
-
             };
             _context.Manipulate(_ => _.Add(Category));
             List<Goods> goodslist = new List<Goods>

@@ -25,7 +25,7 @@ namespace Store.RestAPI.Controllers
         {
             _categoryService.Add(addCategoryDTO);
         }
-        [HttpPost("{id}")]
+        [HttpPut("{id}")]
         public void Update(UpdateCategoryDTO updateCategoryDTO,int id)
         {
             _categoryService.Update(updateCategoryDTO, id);

@@ -14,6 +14,9 @@ namespace Store.Persistence.EF.GoodsInputs
         public void Configure(EntityTypeBuilder<GoodsInput> builder)
         {
             builder.HasKey(x => x.Number);
+            builder.HasOne(_ => _.Goods)
+                .WithMany(_ => _.GoodsInputs)
+                .HasForeignKey(_ => _.GoodsCode);
         }
     }
 }

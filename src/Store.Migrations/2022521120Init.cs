@@ -36,7 +36,7 @@ namespace Store.Migrations
               .WithColumn("MinInventory").AsInt32().NotNullable()
               .WithColumn("MaxInventory").AsInt32().NotNullable()
               .WithColumn("CategoryId").AsInt32().NotNullable().ForeignKey("FK_Goodses_Categories", "Categories","Id")
-              .OnDelete(System.Data.Rule.Cascade);
+              .OnDelete(System.Data.Rule.None);
              
         }
         private void CreateCategory()
@@ -50,7 +50,8 @@ namespace Store.Migrations
              .WithColumn("Date").AsDateTime2().NotNullable()
              .WithColumn("Count").AsInt32().NotNullable()
              .WithColumn("Price").AsInt32().NotNullable()
-             .WithColumn("GoodsId").AsInt32().NotNullable().ForeignKey("FK_GoodsInputs_Goodses", "Goodses", "GoodsCode");
+             .WithColumn("GoodsCode").AsInt32().NotNullable().ForeignKey("FK_GoodsInputs_Goodses", "Goodses", "GoodsCode")
+             .OnDelete(System.Data.Rule.Cascade);
         }
         private void CreateGoodsOutput()
         {
@@ -58,7 +59,8 @@ namespace Store.Migrations
              .WithColumn("Date").AsDateTime2().NotNullable()
              .WithColumn("Count").AsInt32().NotNullable()
              .WithColumn("Price").AsInt32().NotNullable()
-             .WithColumn("GoodsId").AsInt32().NotNullable().ForeignKey("FK_GoodsOutputs_Goodses", "Goodses", "GoodsCode");
+             .WithColumn("GoodsCode").AsInt32().NotNullable().ForeignKey("FK_GoodsOutputs_Goodses", "Goodses", "GoodsCode")
+             .OnDelete(System.Data.Rule.Cascade); 
         }
       
     }

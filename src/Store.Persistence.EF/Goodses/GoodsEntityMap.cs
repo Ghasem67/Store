@@ -16,7 +16,7 @@ namespace Store.Persistence.EF.Goodses
 
             builder.HasOne(_ => _.Category)
                 .WithMany(_ => _.Goodses)
-                .HasForeignKey(e => e.CategoryId).OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(e => e.CategoryId).OnDelete(DeleteBehavior.NoAction);
                 
         }
     }

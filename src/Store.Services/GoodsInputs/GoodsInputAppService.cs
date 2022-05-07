@@ -34,7 +34,7 @@ namespace Store.Services.GoodsInputs
             {
                 Count = addGoodsInputDto.Count,
                 Date = dateTime,
-                GoodsId = addGoodsInputDto.GoodsId,
+                GoodsCode = addGoodsInputDto.GoodsCode,
                 Number = addGoodsInputDto.Number,
                 Price = addGoodsInputDto.Price
             };
@@ -60,7 +60,7 @@ namespace Store.Services.GoodsInputs
 
         public ShowGoodsInputDTO GetOneGoodsInput(int id)
         {
-            throw new NotImplementedException();
+            return _goodsRepository.GetOneGoodsInput(id);
         }
 
         public void Update(UpdateGoodsInputDTO updateGoodsInputDTO,int id)
@@ -78,7 +78,7 @@ namespace Store.Services.GoodsInputs
             }
 
             goodsInput.Number = updateGoodsInputDTO.Number;
-            goodsInput.GoodsId = updateGoodsInputDTO.GoodsId;
+            goodsInput.GoodsCode = updateGoodsInputDTO.GoodsCode;
             goodsInput.Price = updateGoodsInputDTO.Price;
             goodsInput.Count = updateGoodsInputDTO.Count;
             goodsInput.Date = dateTime;

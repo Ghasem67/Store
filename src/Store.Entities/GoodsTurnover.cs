@@ -10,7 +10,7 @@ namespace Store.Entities
     {
         public int Number { get; set; }
         public DateTime Date { get; set; }
-        public int GoodsId { get; set; }
+        public int GoodsCode { get; set; }
         public int Price { get; set; }
         public int Count { get; set; }
         public Goods Goods { get; set; }

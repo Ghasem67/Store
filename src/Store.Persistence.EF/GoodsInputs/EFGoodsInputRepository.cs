@@ -17,28 +17,44 @@ namespace Store.Persistence.EF.GoodsInputs
            _context = context;
         }
 
-        public void Add(Goods goods)
+        public void Add(GoodsInput goodsInput)
         {
-           _context.Add(goods);
+            _context.Add(goodsInput);
         }
 
-        public void Delete(Goods goods)
+        public void Delete(GoodsInput goodsInput)
         {
-            _context.Remove(goods);
+            _context.Remove(goodsInput);
         }
 
         public HashSet<ShowGoodsInputDTO> GetAll()
         {
-            return _context.GoodsInputs.Select(_ => new ShowGoodsInputDTO { 
+            return _context.GoodsInputs.Select(_ => new ShowGoodsInputDTO
+            {
                 Price = _.Price,
                 Count = _.Count,
                 Date = _.Date.ToShortDateString(),
-                Number=_.Number }).ToHashSet();
+                Number = _.Number,
+                GoodsCode = _.GoodsCode,
+            }).ToHashSet();
+            
         }
 
         public GoodsInput GetById(int id)
         {
             return _context.GoodsInputs.FirstOrDefault();
         }
+
+        public ShowGoodsInputDTO GetOneGoodsInput(int id)
+        {
+            return _context.GoodsInputs.Select(_ => new ShowGoodsInputDTO
+            {
+                Count = _.Count,
+                Date = _.Date.ToShortDateString(),
+                GoodsCode = _.GoodsCode,
+                GoodsName = _.Goods.Name
+            }).FirstOrDefault();
+        }
+
     }
 }

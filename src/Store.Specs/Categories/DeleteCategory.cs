@@ -23,8 +23,8 @@ namespace Store.Specs.Categories
     public class DeleteCategory : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _context;
-        
 
+        Category category;
         public DeleteCategory(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();
@@ -33,7 +33,7 @@ namespace Store.Specs.Categories
         [Given("دسته بندی با عنوان 'لبنیات' در سیستم وجود دارد")]
         private void Given()
         {
-            Category category = new Category
+             category = new Category
             {
                 Title="لبنیات"
             };
@@ -45,13 +45,13 @@ namespace Store.Specs.Categories
             var _unitOfWork=new EFUnitOfWork(_context);
             var categoRyrepository=new EFCategoryRepository(_context);
             var _sut = new CategoryAppService(categoRyrepository, _unitOfWork);
-            var id = _context.Categories.FirstOrDefault().Id;
-            _sut.Delete(id);
+            
+            _sut.Delete(category.Id);
         }
         [Then("دسته بندی با عنوان 'لبنیات' حذف می شود")]
         private void Then()
         {
-            var expect =_context.Categories.ToList();
+            var expect =_context.Categories.Where(x=>x.Id.Equals(category.Id)).ToList();
             expect.Should().HaveCount(0);
 
         }

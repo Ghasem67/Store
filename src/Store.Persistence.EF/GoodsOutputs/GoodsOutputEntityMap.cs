@@ -15,6 +15,10 @@ namespace Store.Persistence.EF.GoodsOutputs
         {
             builder.HasKey(_=>_.Number);
 
+            builder.HasOne(_ => _.Goods)
+                 .WithMany(_ => _.GoodsOutputs)
+                 .HasForeignKey(_ => _.GoodsCode);
+              
         }
     }
 }

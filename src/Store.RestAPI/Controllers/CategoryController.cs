@@ -20,6 +20,11 @@ namespace Store.RestAPI.Controllers
         {
             return _categoryService.GetAll();
         }
+        [HttpGet("{id}")]
+        public ShowCategoryDTO GetById(int id)
+        {
+            return _categoryService.GetById(id);
+        }
         [HttpPost]
         public void Add(AddCategoryDTO addCategoryDTO)
         {

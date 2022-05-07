@@ -48,5 +48,18 @@ namespace Store.Persistence.EF.Goodses
             return _context.Goodses.FirstOrDefault(_ => _.GoodsCode.Equals(goodsCode));
         }
 
+        public ShowgoodsDTO GetOne(int GoodsCode)
+        {
+            return _context.Goodses.Select(_ => new ShowgoodsDTO
+            {
+                CategoryName = _.Category.Title,
+                Cost = _.Cost,
+                GoodsCode = _.GoodsCode,
+                Inventory = _.Inventory,
+                MaxInventory = _.MaxInventory,
+                MinInventory = _.MinInventory,
+                Name = _.Name
+            }).FirstOrDefault(_=>_.GoodsCode.Equals(GoodsCode));
+        }
     }
 }

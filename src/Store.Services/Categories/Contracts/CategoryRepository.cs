@@ -13,6 +13,7 @@ namespace Store.Services.Categories.Contracts
         void Add(Category category);
         void Delete(Category category);
         Category GetById(int id);
+        ShowCategoryDTO GetOne(int id);
         HashSet<ShowCategoryDTO> GetAll();
 
     }

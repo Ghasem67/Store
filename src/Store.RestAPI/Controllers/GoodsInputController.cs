@@ -33,12 +33,12 @@ namespace Store.RestAPI.Controllers
         {
             _goodsInputService.Add(addGoodsInputDTO);
         }
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public void Delete(int Id)
         {
             _goodsInputService.Delete(Id);
         }
-        [HttpPut]
+        [HttpPut("{id}")]
         public void Update(UpdateGoodsInputDTO updateGoodsInputDTO, int id)
         {
             _goodsInputService.Update(updateGoodsInputDTO, id);

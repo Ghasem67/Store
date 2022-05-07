@@ -53,9 +53,9 @@ namespace Store.Services.Goodses
             return _goodsRepository.GetAll();
         }
 
-        public ShowgoodsDTO GetOneGoods(int id)
+        public ShowgoodsDTO GetbyId(int id)
         {
-            throw new NotImplementedException();
+           return _goodsRepository.GetOne(id);
         }
 
         public void Update(UpdateGoodsDTO updateGoodsDTO, int id)

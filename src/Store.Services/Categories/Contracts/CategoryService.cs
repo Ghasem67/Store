@@ -12,7 +12,7 @@ namespace Store.Services.Categories.Contracts
         void Add(AddCategoryDTO addCategoryDTO);
         void Update(UpdateCategoryDTO updateCategoryDTO,int id);
         void Delete(int id);
-        //ShowCategoryDTO Get(int id);
+        ShowCategoryDTO GetById(int id);
         HashSet<ShowCategoryDTO> GetAll();
     }
 }

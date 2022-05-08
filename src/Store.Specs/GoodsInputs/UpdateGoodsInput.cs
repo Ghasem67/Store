@@ -17,7 +17,7 @@ using static Store.Specs.BDDHelper;
 
 namespace Store.Specs.GoodsInputs
 {
-    [Scenario("")]
+    [Scenario("ویرایش ورودی کالا")]
     [Feature("",
           AsA = "فروشنده",
           IWantTo = "مدیریت   کالا داشته باشم",
@@ -54,10 +54,10 @@ namespace Store.Specs.GoodsInputs
                 Number = 14,
                 Count = 2,
                 Date = new DateTime(2022, 4, 5, 0, 0, 0, 0),
-                GoodsCode = 1,
+                GoodsCode = 20,
                 Price = 1000
             };
-            _dataContext.Manipulate(_ => _.Goodses.Add(dto));
+            _dataContext.Manipulate(_ => _.GoodsInputs.Add(goodsInput));
         }
         [When("زمانی که  '14' به '16' تغییر می کند")]
         private void When()

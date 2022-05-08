@@ -17,7 +17,7 @@ using static Store.Specs.BDDHelper;
 
 namespace Store.Specs.Goodses
 {
-    [Scenario("")]
+    [Scenario("تعریف کالا")]
     [Feature("",
         AsA ="فروشنده",
         IWantTo = "مدیریت   کالا داشته باشم",

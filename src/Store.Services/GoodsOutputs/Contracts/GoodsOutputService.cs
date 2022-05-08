@@ -1,4 +1,5 @@
 ﻿using Store.Entities;
+using Store.Infrastracture.Application;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Store.Services.GoodsOutputs.Contracts
 {
-    public interface GoodsOutputService
+    public interface GoodsOutputService:Service
     {
         void Add(AddgoodsoutputDTO addgoodsoutputDTO);
         void Delete(int id);

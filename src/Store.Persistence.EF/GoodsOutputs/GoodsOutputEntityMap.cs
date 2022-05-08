@@ -17,7 +17,8 @@ namespace Store.Persistence.EF.GoodsOutputs
 
             builder.HasOne(_ => _.Goods)
                  .WithMany(_ => _.GoodsOutputs)
-                 .HasForeignKey(_ => _.GoodsCode);
+                 .HasForeignKey(_ => _.GoodsCode)
+                 .OnDelete(DeleteBehavior.NoAction);
               
         }
     }

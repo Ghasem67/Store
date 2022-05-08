@@ -23,6 +23,11 @@ namespace Store.Services.Goodses
 
         public void Add(AddGoodsDTO addGoodsDTO)
         {
+          var OneGoods=  _goodsRepository.GetbyId(addGoodsDTO.GoodsCode);
+            if (OneGoods!=null)
+            {
+                throw new Exception();
+            }
             Goods goods = new Goods()
             {
                 CategoryId = addGoodsDTO.CategoryId,

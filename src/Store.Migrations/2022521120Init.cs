@@ -51,7 +51,7 @@ namespace Store.Migrations
              .WithColumn("Count").AsInt32().NotNullable()
              .WithColumn("Price").AsInt32().NotNullable()
              .WithColumn("GoodsCode").AsInt32().NotNullable().ForeignKey("FK_GoodsInputs_Goodses", "Goodses", "GoodsCode")
-             .OnDelete(System.Data.Rule.Cascade);
+             .OnDelete(System.Data.Rule.None);
         }
         private void CreateGoodsOutput()
         {
@@ -60,7 +60,7 @@ namespace Store.Migrations
              .WithColumn("Count").AsInt32().NotNullable()
              .WithColumn("Price").AsInt32().NotNullable()
              .WithColumn("GoodsCode").AsInt32().NotNullable().ForeignKey("FK_GoodsOutputs_Goodses", "Goodses", "GoodsCode")
-             .OnDelete(System.Data.Rule.Cascade); 
+             .OnDelete(System.Data.Rule.None); 
         }
       
     }

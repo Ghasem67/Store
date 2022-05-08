@@ -17,7 +17,7 @@ using static Store.Specs.BDDHelper;
 
 namespace Store.Specs.GoodsInputs
 {
-    [Scenario("")]
+    [Scenario("حذف ورودی کالا")]
     [Feature("",
         AsA = "فروشنده",
         IWantTo = "مدیریت   کالا داشته باشم",
@@ -31,7 +31,7 @@ namespace Store.Specs.GoodsInputs
             _context = CreateDataContext();
         }
 
-        [Given("ورود کالا با شماره '12' در سیستم وجود دارد")]
+        [Given("ورودی کالا با شماره '12' در سیستم وجود دارد")]
         private void Given()
         {
             Category category = new Category()
@@ -43,7 +43,7 @@ namespace Store.Specs.GoodsInputs
             {
                 CategoryId= category.Id,
                 Cost=1000,
-                GoodsCode=14,
+                GoodsCode=25,
                 Inventory=123,
                 MaxInventory=1000,
                 MinInventory=10,
@@ -54,13 +54,13 @@ namespace Store.Specs.GoodsInputs
             {
                 Count=1,
                 Date=new DateTime(2022,2,3,0,0,0,0),
-                GoodsCode=14,
+                GoodsCode=25,
                 Number=12,
                 Price=1000,
             };
             _context.Manipulate(_ => _.GoodsInputs.Add(goodsInput));
         }
-        [When("درخواست حذف ورود کالا با شماره '12' ارسال می کنیم")]
+        [When("درخواست حذف ورودی کالا با شماره '12' ارسال می کنیم")]
         private void When()
         {
             UnitOfWork _unitOfWork = new EFUnitOfWork(_context);
@@ -68,7 +68,7 @@ namespace Store.Specs.GoodsInputs
             var _sut = new GoodsInputAppService(_unitOfWork, goodsInputRepository);
             _sut.Delete(12);
         }
-        [Then("ورود کالا با شماره '12' حذف می شود")]
+        [Then("ورودی کالا با شماره '12' حذف می شود")]
         private void Then()
         {
             var expect = _context.GoodsInputs.OrderByDescending(x => x.Date).FirstOrDefault(_ => _.Number.Equals(12));

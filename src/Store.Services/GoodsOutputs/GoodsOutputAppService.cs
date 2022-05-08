@@ -50,6 +50,7 @@ namespace Store.Services.GoodsOutputs
                 throw new GoodsOutputNotFoundException();
             }
             _repository.Delete(goodsInput);
+            _unitOfWork.Commit();
         }
 
         public HashSet<ShowGoodsOutputDTO> GetAll()

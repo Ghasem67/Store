@@ -47,7 +47,7 @@ namespace Store.Services.Test.Unit.GoodsInputs
             _eFDataContext.GoodsInputs.Should().Contain(_ => _.GoodsCode.Equals(addGoodsInputDTO.GoodsCode));
         }
         [Fact]
-        private void Update_updates_goods_Properly()
+        private void Update_updates_goodsinput_Properly()
         {
             var goodsInput = GenerateGoodsInput();
             UpdateGoodsInputDTO updateGoodsInputDTO = new UpdateGoodsInputDTO()

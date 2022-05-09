@@ -1,4 +1,5 @@
-﻿using Store.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Store.Entities;
 using Store.Services.GoodsInputs.Contracts;
 using System;
 using System.Collections.Generic;
@@ -10,26 +11,26 @@ namespace Store.Persistence.EF.GoodsInputs
 {
     public class EFGoodsInputRepository : GoodsInputRepository
     {
-         private readonly  EFDataContext _context;
+         private readonly  DbSet<GoodsInput> _goodsInput;
 
         public EFGoodsInputRepository(EFDataContext context)
         {
-           _context = context;
+            _goodsInput = context.Set<GoodsInput>();
         }
 
         public void Add(GoodsInput goodsInput)
         {
-            _context.Add(goodsInput);
+            _goodsInput.Add(goodsInput);
         }
 
         public void Delete(GoodsInput goodsInput)
         {
-            _context.Remove(goodsInput);
+            _goodsInput.Remove(goodsInput);
         }
 
         public HashSet<ShowGoodsInputDTO> GetAll()
         {
-            return _context.GoodsInputs.Select(_ => new ShowGoodsInputDTO
+            return _goodsInput.Select(_ => new ShowGoodsInputDTO
             {
                 Price = _.Price,
                 Count = _.Count,
@@ -42,17 +43,20 @@ namespace Store.Persistence.EF.GoodsInputs
 
         public GoodsInput GetById(int number)
         {
-            return _context.GoodsInputs.FirstOrDefault(_=>_.Number.Equals(number));
+            return _goodsInput.FirstOrDefault(_=>_.Number.Equals(number));
         }
 
         public ShowGoodsInputDTO GetOneGoodsInput(int number)
         {
-            return _context.GoodsInputs.Select(_ => new ShowGoodsInputDTO
+          
+            return _goodsInput.Select(_ => new ShowGoodsInputDTO
             {
                 Count = _.Count,
                 Date = _.Date.ToShortDateString(),
                 GoodsCode = _.GoodsCode,
-                GoodsName = _.Goods.Name
+                GoodsName = _.Goods.Name,
+                Number = _.Number,
+                Price = _.Price
             }).FirstOrDefault(_ => _.Number.Equals(number));
         }
 

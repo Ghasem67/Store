@@ -98,6 +98,16 @@ namespace Store.Services.Test.Unit.GoodsOutputs
             expect.Should().Contain(_ => _.Number == goodsOutputList[2].Number);
             expect.Should().Contain(_ => _.Price == goodsOutputList[2].Price);
         }
+        [Fact]
+        private void GEtById_getbyid_goodsoutput_properly()
+        {
+            var goodsOutput = GenerateGoodsOutput();
+            var expect = _sut.GetById(goodsOutput.Number);
+            expect.Count.Should().Be(goodsOutput.Count);
+            expect.GoodsCode.Should().Be(goodsOutput.GoodsCode);
+            expect.Date.Should().Be(goodsOutput.Date.ToShortDateString());
+           
+        }
         private List<GoodsOutput> genaratelistgoodsOutput()
         {
             Category category = new Category()
@@ -151,7 +161,7 @@ namespace Store.Services.Test.Unit.GoodsOutputs
             GoodsOutput goodsOutput = new GoodsOutput()
             {
                 Count = 1,
-                Date = new DateTime(2022, 2, 2),
+                Date = new DateTime(2022, 2, 2,0,0,0,0),
                 Number = 12,
                 Price = 1000,
                 GoodsCode = goods.GoodsCode,

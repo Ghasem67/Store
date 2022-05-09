@@ -122,7 +122,7 @@ namespace Store.Services.Test.Unit.Goodses
             expect.Should().BeNull();
         }
         [Fact]
-        private void Get_gets_goods_properly()
+        private void GetAll_getalls_goods_properly()
         {
             Category Category = new Category
             {
@@ -163,30 +163,61 @@ namespace Store.Services.Test.Unit.Goodses
             }
         };
             _context.Manipulate(_ => _.Goodses.AddRange(goodslist));
-            _context.Goodses.Should().HaveCount(3);
-            _context.Goodses.Should().Contain(_ => _.GoodsCode.Equals(goodslist[0].GoodsCode));
-            _context.Goodses.Should().Contain(_ => _.Name.Equals(goodslist[0].Name));
-            _context.Goodses.Should().Contain(_ => _.CategoryId.Equals(goodslist[0].CategoryId));
-            _context.Goodses.Should().Contain(_ => _.MaxInventory.Equals(goodslist[0].MaxInventory));
-            _context.Goodses.Should().Contain(_ => _.MinInventory.Equals(goodslist[0].MinInventory));
-            _context.Goodses.Should().Contain(_ => _.Inventory.Equals(goodslist[0].Inventory));
-            _context.Goodses.Should().Contain(_ => _.Cost.Equals(goodslist[0].Cost));
+            var except = _Sut.GetAll();
+            except.Should().HaveCount(3);
+            except.Should().Contain(_ => _.GoodsCode.Equals(goodslist[0].GoodsCode));
+            except.Should().Contain(_ => _.Name.Equals(goodslist[0].Name));
+            except.Should().Contain(_ => _.CategoryName.Equals(goodslist[0].Category.Title));
+            except.Should().Contain(_ => _.MaxInventory.Equals(goodslist[0].MaxInventory));
+            except.Should().Contain(_ => _.MinInventory.Equals(goodslist[0].MinInventory));
+            except.Should().Contain(_ => _.Inventory.Equals(goodslist[0].Inventory));
+            except.Should().Contain(_ => _.Cost.Equals(goodslist[0].Cost));
 
-            _context.Goodses.Should().Contain(_ => _.GoodsCode.Equals(goodslist[1].GoodsCode));
-            _context.Goodses.Should().Contain(_ => _.Name.Equals(goodslist[1].Name));
-            _context.Goodses.Should().Contain(_ => _.CategoryId.Equals(goodslist[1].CategoryId));
-            _context.Goodses.Should().Contain(_ => _.MaxInventory.Equals(goodslist[1].MaxInventory));
-            _context.Goodses.Should().Contain(_ => _.MinInventory.Equals(goodslist[1].MinInventory));
-            _context.Goodses.Should().Contain(_ => _.Inventory.Equals(goodslist[1].Inventory));
-            _context.Goodses.Should().Contain(_ => _.Cost.Equals(goodslist[1].Cost));
+            except.Should().Contain(_ => _.GoodsCode.Equals(goodslist[1].GoodsCode));
+            except.Should().Contain(_ => _.Name.Equals(goodslist[1].Name));
+            except.Should().Contain(_ => _.CategoryName.Equals(goodslist[1].Category.Title));
+            except.Should().Contain(_ => _.MaxInventory.Equals(goodslist[1].MaxInventory));
+            except.Should().Contain(_ => _.MinInventory.Equals(goodslist[1].MinInventory));
+            except.Should().Contain(_ => _.Inventory.Equals(goodslist[1].Inventory));
+            except.Should().Contain(_ => _.Cost.Equals(goodslist[1].Cost));
 
-            _context.Goodses.Should().Contain(_ => _.GoodsCode.Equals(goodslist[2].GoodsCode));
-            _context.Goodses.Should().Contain(_ => _.Name.Equals(goodslist[2].Name));
-            _context.Goodses.Should().Contain(_ => _.CategoryId.Equals(goodslist[2].CategoryId));
-            _context.Goodses.Should().Contain(_ => _.MaxInventory.Equals(goodslist[2].MaxInventory));
-            _context.Goodses.Should().Contain(_ => _.MinInventory.Equals(goodslist[2].MinInventory));
-            _context.Goodses.Should().Contain(_ => _.Inventory.Equals(goodslist[2].Inventory));
-            _context.Goodses.Should().Contain(_ => _.Cost.Equals(goodslist[2].Cost));
+            except.Should().Contain(_ => _.GoodsCode.Equals(goodslist[2].GoodsCode));
+            except.Should().Contain(_ => _.Name.Equals(goodslist[2].Name));
+            except.Should().Contain(_ => _.CategoryName.Equals(goodslist[2].Category.Title));
+            except.Should().Contain(_ => _.MaxInventory.Equals(goodslist[2].MaxInventory));
+            except.Should().Contain(_ => _.MinInventory.Equals(goodslist[2].MinInventory));
+            except.Should().Contain(_ => _.Inventory.Equals(goodslist[2].Inventory));
+            except.Should().Contain(_ => _.Cost.Equals(goodslist[2].Cost));
+        }
+        [Fact]
+        private void GetById_getByIds_goods_properly()
+        {
+            Category Category = new Category
+            {
+                Title = "لبنیات"
+            };
+            _context.Manipulate(_ => _.Categories.Add(Category));
+
+            Goods goods = new Goods
+            {
+                CategoryId = _context.Categories.FirstOrDefault().Id,
+                Cost = 1000,
+                GoodsCode = 13,
+                Inventory = 10,
+                MaxInventory = 1000,
+                MinInventory = 10,
+                Name = "شیر پگاه"
+            };
+            _context.Manipulate(_ => _.Goodses.Add(goods));
+            var except = _Sut.GetbyId(goods.GoodsCode);
+            except.Should().NotBeNull();
+            except.GoodsCode.Should().Be(goods.GoodsCode);
+            except.Name.Should().Be(goods.Name);
+            except.CategoryName.Should().Be(goods.Category.Title);
+            except.MaxInventory.Should().Be(goods.MaxInventory);
+            except.MinInventory.Should().Be(goods.MinInventory);
+            except.Inventory.Should().Be(goods.Inventory);
+            except.Cost.Should().Be(goods.Cost);
         }
 
     }

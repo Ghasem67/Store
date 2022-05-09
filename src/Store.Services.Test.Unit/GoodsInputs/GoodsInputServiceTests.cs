@@ -32,7 +32,7 @@ namespace Store.Services.Test.Unit.GoodsInputs
         [Fact]
         private void Adds_adds_goodsInput_properly()
         {
-            var goods = generategoods();
+            var goods = GenerateGoodsInput();
             AddGoodsInputDTO addGoodsInputDTO = new AddGoodsInputDTO
             {
                 Count = 1,
@@ -46,6 +46,18 @@ namespace Store.Services.Test.Unit.GoodsInputs
             _eFDataContext.GoodsInputs.Should().Contain(_ => _.Date.ToShortDateString().Equals(addGoodsInputDTO.Date));
             _eFDataContext.GoodsInputs.Should().Contain(_ => _.GoodsCode.Equals(addGoodsInputDTO.GoodsCode));
         }
+
+        [Fact]
+        private void GetById_Getbyids_goodsInput_properly()
+        {
+            var goods = GenerateGoodsInput();
+           
+          var expect=  _sut.GetById(goods.Number);
+            expect.Count.Should().Be(goods.Count);
+            expect.Date.Should().Be(goods.Date.ToShortDateString());
+            expect.GoodsCode.Should().Be(goods.GoodsCode);
+            expect.GoodsName.Should().Be(goods.Goods.Name);
+        }
         [Fact]
         private void Update_updates_goodsinput_Properly()
         {
@@ -58,7 +70,7 @@ namespace Store.Services.Test.Unit.GoodsInputs
                 Price = 2000,
                 GoodsCode = goodsInput.GoodsCode,
             };
-            _sut.Update(updateGoodsInputDTO, goodsInput.GoodsCode);
+            _sut.Update(updateGoodsInputDTO, goodsInput.Number);
             var expect = _eFDataContext.GoodsInputs.FirstOrDefault(_ => _.GoodsCode == updateGoodsInputDTO.GoodsCode);
             expect.Number.Should().Be(updateGoodsInputDTO.Number);
             expect.Date.ToShortDateString().Should().Be(updateGoodsInputDTO.Date);

@@ -49,9 +49,9 @@ namespace Store.Services.GoodsInputs
            return _goodsInputRepository.GetAll();
         }
 
-        public ShowGoodsInputDTO GetOneGoodsInput(int id)
+        public ShowGoodsInputDTO GetById(int numder)
         {
-            return _goodsInputRepository.GetOneGoodsInput(id);
+            return _goodsInputRepository.GetOneGoodsInput(numder);
         }
 
         public void Update(UpdateGoodsInputDTO updateGoodsInputDTO,int id)

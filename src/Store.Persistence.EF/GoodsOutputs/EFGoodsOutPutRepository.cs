@@ -41,7 +41,7 @@ namespace Store.Persistence.EF.GoodsOutputs
 
         public GoodsOutput GetById(int number)
         {
-            return _goodsOutputs.FirstOrDefault(_ => _.GoodsCode.Equals(number));
+            return _goodsOutputs.FirstOrDefault(_ => _.Number.Equals(number));
         }
 
         public ShowGoodsOutputDTO GetOne(int number)
@@ -53,7 +53,7 @@ namespace Store.Persistence.EF.GoodsOutputs
                 GoodsName = _.Goods.Name,
                 Number = _.Number,
                 Price = _.Price
-            }).FirstOrDefault(_=>_.GoodsCode.Equals(number));
+            }).FirstOrDefault(_=>_.Number.Equals(number));
         }
     }
 }

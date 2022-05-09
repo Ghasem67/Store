@@ -13,6 +13,6 @@ namespace Store.Services.GoodsInputs.Contracts
         void Update(UpdateGoodsInputDTO updateGoodsInputDTO,int id);
         void Delete(int id);
         HashSet<ShowGoodsInputDTO> GetAll();
-        ShowGoodsInputDTO GetOneGoodsInput(int id);
+        ShowGoodsInputDTO GetById(int id);
     }
 }

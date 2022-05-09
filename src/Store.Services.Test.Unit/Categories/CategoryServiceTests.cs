@@ -29,7 +29,7 @@ namespace Store.Services.Test.Unit.Categories
                 .CreateDataContext<EFDataContext>();
             _unitOfWork = new EFUnitOfWork(_context);
             _categoryRepository = new EFCategoryRepository(_context);
-            _Sut = new CategoryAppService(_categoryRepository,_unitOfWork);
+            _Sut = new CategoryAppService(_categoryRepository, _unitOfWork);
         }
         [Fact]
         private void Add_adds_category_properly()
@@ -46,7 +46,7 @@ namespace Store.Services.Test.Unit.Categories
             _context.Manipulate(_ => _.Categories.Add(category));
             UpdateCategoryDTO updateCategoryDTO = GenerateUpdateCategoryDto("labaniat");
             _Sut.Update(updateCategoryDTO, category.Id);
-            var expect=_context.Categories.FirstOrDefault(_=>_.Id.Equals(category.Id));
+            var expect = _context.Categories.FirstOrDefault(_ => _.Id.Equals(category.Id));
             expect.Title.Should().Be(updateCategoryDTO.Title);
         }
 
@@ -57,6 +57,17 @@ namespace Store.Services.Test.Unit.Categories
             _context.Manipulate(_ => _.Categories.Add(category));
             _Sut.Delete(category.Id);
             _context.Categories.Should().HaveCount(0);
+        }
+        [Fact]
+        private void GetById_getbyids_category_properly()
+        {
+            Category category = new Category()
+            {
+                Title = "نان"
+            };
+            _context.Manipulate(_ => _.Categories.Add(category));
+            var expect = _Sut.GetById(category.Id);
+            expect.Title.Should().Contain(category.Title);
         }
         [Fact]
         private void GetAll_return_all_categories()
@@ -73,7 +84,7 @@ namespace Store.Services.Test.Unit.Categories
         {
             var categoryId = 2000;
             var categoryDTO = GenerateUpdateCategoryDto("editcategory");
-            Action expect =()=> _Sut.Update(categoryDTO, categoryId);
+            Action expect = () => _Sut.Update(categoryDTO, categoryId);
             expect.Should().ThrowExactly<CategoryNotFoundException>();
         }
         [Fact]
@@ -84,19 +95,19 @@ namespace Store.Services.Test.Unit.Categories
             Action expect = () => _Sut.Delete(categoryId);
             expect.Should().ThrowExactly<CategoryNotFoundException>();
         }
-        //[Fact]
-        //private void Add_adds_throw_IsExistException_when_add_title_Category_is_exist()
-        //{
-        //    var category = CategoryFactory.CreateCategory("khoshkbar");
-        //    _context.Manipulate(_ => _.Categories.Add(category));
-        //    AddCategoryDTO updateCategoryDTO = new AddCategoryDTO()
-        //    {
+        [Fact]
+        private void Add_adds_throw_IsExistException_when_add_title_Category_is_exist()
+        {
+            var category = CategoryFactory.CreateCategory("khoshkbar");
+            _context.Manipulate(_ => _.Categories.Add(category));
+            AddCategoryDTO updateCategoryDTO = new AddCategoryDTO()
+            {
 
-        //        Title = "khoshkbar"
-        //    };
-        //    Action expect = () => _Sut.Add(updateCategoryDTO);
-        //    expect.Should().NotBeNull()
-        //}
+                Title = "khoshkbar"
+            };
+            Action expect = () => _Sut.Add(updateCategoryDTO);
+            expect.Should().NotBeNull();
+        }
         private static AddCategoryDTO GenerateAddCategoryDto()
         {
             return new AddCategoryDTO

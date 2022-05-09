@@ -42,7 +42,7 @@ namespace Store.Specs.GoodsOutputs
             {
                 CategoryId = _context.Categories.OrderByDescending(_ => _.Id).FirstOrDefault().Id,
                 Cost = 1000,
-                GoodsCode = 54,
+                GoodsCode = 55,
                 MaxInventory = 100,
                 Inventory = 0,
                 MinInventory = 10,

@@ -26,7 +26,7 @@ namespace Store.RestAPI.Controllers
         [HttpGet("{id}")]
         public ShowGoodsInputDTO GetById(int id)
         {
-            return _goodsInputService.GetOneGoodsInput(id);
+            return _goodsInputService.GetById(id);
         }
         [HttpPost]
         public void Add(AddGoodsInputDTO addGoodsInputDTO)

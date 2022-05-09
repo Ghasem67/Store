@@ -33,16 +33,10 @@ namespace Store.Services.Categories
 
         public void Delete(int id)
         {
-           var category= _categoryRepository.GetById(id);
-            if (category==null)
-            {
-                throw new CategoryNotFoundException();
-            }
+            var category = CheckIsNull(id);
             _categoryRepository.Delete(category);
             _unitOfWork.Commit();
         }
-
-        
 
         public HashSet<ShowCategoryDTO> GetAll()
         {
@@ -56,13 +50,18 @@ namespace Store.Services.Categories
 
         public void Update(UpdateCategoryDTO updateCategoryDTO,int id)
         {
-           var category= _categoryRepository.GetById(id);
-            if (category==null)
-            {
-                 throw new CategoryNotFoundException();
-            }
+            var category = CheckIsNull(id);
             category.Title = updateCategoryDTO.Title;
             _unitOfWork.Commit();
+        }
+        private Category CheckIsNull(int id)
+        {
+            var category = _categoryRepository.GetById(id);
+            if (category == null)
+            {
+                throw new CategoryNotFoundException();
+            }
+            return category;
         }
     }
 }

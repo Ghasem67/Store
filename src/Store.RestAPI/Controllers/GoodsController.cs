@@ -20,25 +20,25 @@ namespace Store.RestAPI.Controllers
         {
             return _goodsService.GetAll();
         }
-        [HttpGet("{id}")]
-        public ShowgoodsDTO GetById(int Id)
+        [HttpGet("{GoodsCode}")]
+        public ShowgoodsDTO GetById(int GoodsCode)
         {
-            return _goodsService.GetbyId(Id);
+            return _goodsService.GetbyId(GoodsCode);
         }
         [HttpPost]
         public void Add(AddGoodsDTO addGoodsDTO)
         {
             _goodsService.Add(addGoodsDTO);
         }
-        [HttpPatch("{id}")]
-        public void Update(UpdateGoodsDTO updateGoodsDTO,int id)
+        [HttpPut("{GoodsCode}")]
+        public void Update(UpdateGoodsDTO updateGoodsDTO,int goodsCode)
         {
-            _goodsService.Update(updateGoodsDTO,id);
+            _goodsService.Update(updateGoodsDTO, goodsCode);
         }
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{GoodsCode}")]
+        public void Delete(int goodsCode)
         {
-            _goodsService.Delete(id);
+            _goodsService.Delete(goodsCode);
         }
     }
 }

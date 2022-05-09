@@ -40,12 +40,12 @@ namespace Store.Persistence.EF.GoodsInputs
             
         }
 
-        public GoodsInput GetById(int id)
+        public GoodsInput GetById(int number)
         {
-            return _context.GoodsInputs.FirstOrDefault();
+            return _context.GoodsInputs.FirstOrDefault(_=>_.Number.Equals(number));
         }
 
-        public ShowGoodsInputDTO GetOneGoodsInput(int id)
+        public ShowGoodsInputDTO GetOneGoodsInput(int number)
         {
             return _context.GoodsInputs.Select(_ => new ShowGoodsInputDTO
             {
@@ -53,7 +53,7 @@ namespace Store.Persistence.EF.GoodsInputs
                 Date = _.Date.ToShortDateString(),
                 GoodsCode = _.GoodsCode,
                 GoodsName = _.Goods.Name
-            }).FirstOrDefault();
+            }).FirstOrDefault(_ => _.Number.Equals(number));
         }
 
     }

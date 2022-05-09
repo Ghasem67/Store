@@ -23,16 +23,11 @@ namespace Store.Services.GoodsOutputs
 
         public void Add(AddgoodsoutputDTO addgoodsoutputDTO)
         {
-            DateTime dateTime = new DateTime();
-            bool IsDate = DateTime.TryParse(addgoodsoutputDTO.Date, out dateTime);
-            if (!IsDate)
-            {
-                throw new DatetimeFormatException();
-            }
+           
             GoodsOutput goodoutput=new GoodsOutput
             {
                 Count = addgoodsoutputDTO.Count,
-                Date = dateTime,
+                Date = IsDateTimeFormat(addgoodsoutputDTO.Date),
                 GoodsCode = addgoodsoutputDTO.GoodsCode,
                 Number = addgoodsoutputDTO.Number,
                 Price = addgoodsoutputDTO.Price
@@ -41,10 +36,10 @@ namespace Store.Services.GoodsOutputs
             _unitOfWork.Commit();
         }
 
-        public void Delete(int id)
+        public void Delete(int number)
         {
 
-            var goodsInput = _repository.GetById(id);
+            var goodsInput = _repository.GetById(number);
             if (goodsInput == null)
             {
                 throw new GoodsOutputNotFoundException();
@@ -58,30 +53,41 @@ namespace Store.Services.GoodsOutputs
           return  _repository.GetAll();
         }
 
-        public ShowGoodsOutputDTO GetById(int id)
+        public ShowGoodsOutputDTO GetById(int number)
         {
-            return _repository.GetOne(id);
+            return _repository.GetOne(number);
         }
 
-        public void Update(UpdateGoodsOutputDTO updateGoodsOutputDTO,int id )
+        public void Update(UpdateGoodsOutputDTO updateGoodsOutputDTO,int number )
         {
-            var goodsoutput = _repository.GetById(id);
-            if (goodsoutput == null)
-            {
-                throw new GoodsOutputNotFoundException();
-            }
-            DateTime dateTime = new DateTime();
-            bool IsDate = DateTime.TryParse(updateGoodsOutputDTO.Date, out dateTime);
-            if (!IsDate)
-            {
-                throw new DatetimeFormatException();
-            }
+            var goodsoutput = CheckIsNull(number);
+
+
             goodsoutput.Number = updateGoodsOutputDTO.Number;
             goodsoutput.GoodsCode = updateGoodsOutputDTO.GoodsCode;
             goodsoutput.Price = updateGoodsOutputDTO.Price;
             goodsoutput.Count = updateGoodsOutputDTO.Count;
-            goodsoutput.Date = dateTime;
+            goodsoutput.Date = IsDateTimeFormat(updateGoodsOutputDTO.Date);
             _unitOfWork.Commit();
+        }
+        private GoodsOutput CheckIsNull(int number)
+        {
+            var goodsOutput = _repository.GetById(number);
+            if (goodsOutput == null)
+            {
+                throw new GoodsOutputNotFoundException();
+            }
+            return goodsOutput;
+        }
+        private DateTime IsDateTimeFormat(string InputDate)
+        {
+            DateTime date = new DateTime();
+            bool IsDate = DateTime.TryParse(InputDate, out date);
+            if (!IsDate)
+            {
+                throw new DatetimeFormatException();
+            }
+            return date;
         }
     }
 }

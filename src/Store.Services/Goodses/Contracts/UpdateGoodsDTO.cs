@@ -2,7 +2,7 @@
 {
     public class UpdateGoodsDTO
     {
-        public int GoodsCode { get; set; }
+       
         public string Name { get; set; }
         public int Cost { get; set; }
         public int Inventory { get; set; }

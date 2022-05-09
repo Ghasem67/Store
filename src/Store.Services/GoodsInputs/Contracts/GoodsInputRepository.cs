@@ -12,9 +12,8 @@ namespace Store.Services.GoodsInputs.Contracts
     {
         void Add(GoodsInput goodsInput);
         void Delete(GoodsInput goodsInput);
-        GoodsInput GetById(int id);
+        GoodsInput GetById(int number);
         HashSet<ShowGoodsInputDTO> GetAll();
-        ShowGoodsInputDTO GetOneGoodsInput(int id);
-
+        ShowGoodsInputDTO GetOneGoodsInput(int number);
     }
 }

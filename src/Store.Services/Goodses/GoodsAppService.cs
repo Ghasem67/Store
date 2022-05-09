@@ -26,7 +26,7 @@ namespace Store.Services.Goodses
           var OneGoods=  _goodsRepository.GetbyId(addGoodsDTO.GoodsCode);
             if (OneGoods!=null)
             {
-                throw new Exception();
+                throw new DuplicateGoodsCodeException();
             }
             Goods goods = new Goods()
             {
@@ -42,13 +42,9 @@ namespace Store.Services.Goodses
             _unitOfWork.Commit();
         }
 
-        public void Delete(int id)
+        public void Delete(int GoodsCode)
         {
-           var goods = _goodsRepository.GetbyId(id);
-            if (goods==null)
-            {
-                throw new GoodsNotFoundException();
-            }
+            var goods = CheckingNull(GoodsCode);
             _goodsRepository.Delete(goods);
             _unitOfWork.Commit();
         }
@@ -63,13 +59,9 @@ namespace Store.Services.Goodses
            return _goodsRepository.GetOne(id);
         }
 
-        public void Update(UpdateGoodsDTO updateGoodsDTO, int id)
+        public void Update(UpdateGoodsDTO updateGoodsDTO, int GoodsCode)
         {
-            var goods = _goodsRepository.GetbyId(id);
-            if (goods == null)
-            {
-              throw new GoodsNotFoundException();
-            }
+            var goods = CheckingNull(GoodsCode);
             goods.Cost = updateGoodsDTO.Cost;
             goods.Name = updateGoodsDTO.Name;
             goods.Inventory = updateGoodsDTO.Inventory;
@@ -78,6 +70,15 @@ namespace Store.Services.Goodses
             goods.Inventory = updateGoodsDTO.Inventory;
             goods.CategoryId= updateGoodsDTO.CategoryId;
             _unitOfWork.Commit();
+        }
+        private Goods CheckingNull(int GoodsCode)
+        {
+            var goods = _goodsRepository.GetbyId(GoodsCode);
+            if (goods == null)
+            {
+                throw new GoodsNotFoundException();
+            }
+            return goods;
         }
     }
 }

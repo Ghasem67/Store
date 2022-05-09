@@ -39,12 +39,12 @@ namespace Store.Persistence.EF.GoodsOutputs
               Price = _.Price }).ToHashSet();
         }
 
-        public GoodsOutput GetById(int id)
+        public GoodsOutput GetById(int number)
         {
-            return _goodsOutputs.FirstOrDefault();
+            return _goodsOutputs.FirstOrDefault(_ => _.GoodsCode.Equals(number));
         }
 
-        public ShowGoodsOutputDTO GetOne(int id)
+        public ShowGoodsOutputDTO GetOne(int number)
         {
             return _goodsOutputs.Select(_ => new ShowGoodsOutputDTO { 
                 Count = _.Count,
@@ -53,7 +53,7 @@ namespace Store.Persistence.EF.GoodsOutputs
                 GoodsName = _.Goods.Name,
                 Number = _.Number,
                 Price = _.Price
-            }).FirstOrDefault(_=>_.GoodsCode.Equals(id));
+            }).FirstOrDefault(_=>_.GoodsCode.Equals(number));
         }
     }
 }

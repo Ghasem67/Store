@@ -86,7 +86,6 @@ namespace Store.Services.Test.Unit.Goodses
                 Inventory = 0,
                 Name = "ماست پگاه",
                 Cost = 3000,
-                GoodsCode = 20
             };
             _Sut.Update(dto, dto1.GoodsCode);
             var expect = _context.Goodses.FirstOrDefault(_ => _.GoodsCode == dto1.GoodsCode);

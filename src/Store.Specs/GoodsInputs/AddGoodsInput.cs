@@ -6,6 +6,7 @@ using Store.Persistence.EF;
 using Store.Persistence.EF.GoodsInputs;
 using Store.Services.GoodsInputs;
 using Store.Services.GoodsInputs.Contracts;
+using Store.Services.GoodsInputs.Exceptions;
 using Store.Specs.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -19,15 +20,22 @@ namespace Store.Specs.GoodsInputs
 {
     [Scenario("تعریف ورودی کالا")]
     [Feature("",
-        AsA ="فروشنده",
+        AsA = "فروشنده",
         IWantTo = "مدیریت   کالا داشته باشم",
-        InOrderTo ="تا بتوانیم ورودی  کالا ثبت کنیم")]
+        InOrderTo = "تا بتوانیم ورودی  کالا ثبت کنیم")]
     public class AddGoodsInput : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _dataContext;
+        UnitOfWork _unitOfWork;
+        GoodsInputRepository goodsInputRepository;
+        GoodsInputService _sut;
+        Action expect;
         public AddGoodsInput(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();
+            _unitOfWork = new EFUnitOfWork(_dataContext);
+            goodsInputRepository = new EFGoodsInputRepository(_dataContext);
+            _sut = new GoodsInputAppService(_unitOfWork, goodsInputRepository);
         }
         [Given("هیچ خریدی  وجود ندارد")]
         private void Given()
@@ -62,17 +70,15 @@ namespace Store.Specs.GoodsInputs
                 GoodsCode = 12,
                 Price = 1000
             };
-            UnitOfWork _unitOfWork = new EFUnitOfWork(_dataContext);
-            GoodsInputRepository goodsInputRepository = new EFGoodsInputRepository(_dataContext);
-            var _sut = new GoodsInputAppService(_unitOfWork, goodsInputRepository);
+
             _sut.Add(goodsInput);
         }
         [Then("باید ورود کالای 'شیر' به تعداد '2 عدد' قیمت '2000' به شماره' 12' وجود داشته باشد")]
         private void Then()
         {
-            var expect = _dataContext.GoodsInputs.OrderByDescending(_=>_.Date).FirstOrDefault();
+            var expect = _dataContext.GoodsInputs.OrderByDescending(_ => _.Date).FirstOrDefault();
             expect.Number.Should().Be(12);
-            expect.Date.Should().Be(new DateTime(2022 , 4 , 5,0,0,0,0));
+            expect.Date.Should().Be(new DateTime(2022, 4, 5, 0, 0, 0, 0));
             expect.Price.Should().Be(1000);
             expect.GoodsCode.Should().Be(1);
             expect.Count.Should().Be(2);
@@ -83,6 +89,65 @@ namespace Store.Specs.GoodsInputs
             Given();
             When();
             Then();
+        }
+        [Given("ورود کالا 'شیر' به تعداد '2 عدد' قیمت '2000' به شماره' 12' ثبت   می شود")]
+        private void DuplicateGiven()
+        {
+            var _category = new Category
+            {
+                Title = "لبنیات"
+            };
+
+            _dataContext.Manipulate(_ => _.Categories.Add(_category));
+            Goods dto = new Goods()
+            {
+                CategoryId = _dataContext.Categories.FirstOrDefault().Id,
+                Cost = 1000,
+                GoodsCode = 12,
+                MaxInventory = 100,
+                Inventory = 0,
+                MinInventory = 10,
+                Name = "شیر",
+            };
+            _dataContext.Manipulate(_ => _.Goodses.Add(dto));
+            GoodsInput goodsInput = new GoodsInput
+            {
+                Number = 12,
+                Count = 2,
+                Date = new DateTime(2022, 4, 5, 0, 0, 0, 0),
+                GoodsCode = 12,
+                Price = 1000
+            };
+
+            _dataContext.Manipulate(_ => _.GoodsInputs.Add(goodsInput));
+        }
+        [When("ورود کالا با شماره'12' ثبت می شود")]
+        private void DuplicateWhen()
+        {
+            AddGoodsInputDTO goodsInput = new AddGoodsInputDTO
+            {
+                Number = 12,
+                Count = 2,
+                Date = "2022 - 4 - 5",
+                GoodsCode = 12,
+                Price = 1000
+            };
+
+            expect = () => _sut.Add(goodsInput);
+        }
+        [Then("خطایی با عنوان ‘ورودی کالا با عنوان 12 وجود دارد’ رخ می دهد")]
+        private void DuplicateThen()
+        {
+            expect.Should().ThrowExactly<DuplicateFactorNumberException>();
+        }
+        [Fact]
+        private void DuplicateRun()
+        {
+            Runner.RunScenario(
+                _ => DuplicateGiven(),
+                _ => DuplicateWhen(),
+                _ => DuplicateThen()
+                );
         }
     }
 }

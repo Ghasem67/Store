@@ -6,6 +6,7 @@ using Store.Persistence.EF;
 using Store.Persistence.EF.GoodsOutputs;
 using Store.Services.GoodsOutputs;
 using Store.Services.GoodsOutputs.Contracts;
+using Store.Services.GoodsOutputs.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,6 +67,22 @@ namespace Store.Services.Test.Unit.GoodsOutputs
             expect.GoodsCode.Should().Be(updategoodsoutputDTO.GoodsCode);
             expect.Price.Should().Be(updategoodsoutputDTO.Price);
 
+        }
+        [Fact]
+        private void Update_throw_goodsInput_NotFoundException_when_goodsInput_with_given_id_is_not_exist()
+        {
+            var number = 2000;
+            var goodsInputDTO = GenerateUpdateGoodsOutputDto();
+            Action expect = () => _sut.Update(goodsInputDTO, number);
+            expect.Should().ThrowExactly<GoodsOutputNotFoundException>();
+        }
+        [Fact]
+        private void Delete_throw_goodsInput_NotFoundException_When_goodsInput_with_given_id_is_not_exist()
+        {
+
+            var number = 2000;
+            Action expect = () => _sut.Delete(number);
+            expect.Should().ThrowExactly<GoodsOutputNotFoundException>();
         }
         [Fact]
         private void Delete_deletes_goodsOutput_properly()
@@ -169,6 +186,19 @@ namespace Store.Services.Test.Unit.GoodsOutputs
             _context.Manipulate(_ => _.GoodsOutputs.Add(goodsOutput));
             return goodsOutput;
         }
+        private UpdateGoodsOutputDTO GenerateUpdateGoodsOutputDto()
+        {
+            var goods = generategoods();
 
+            return new UpdateGoodsOutputDTO
+            {
+                Count = 1,
+                Date = new DateTime(2022, 2, 2, 0, 0, 0, 0).ToShortDateString(),
+                Number = 12,
+                Price = 1000,
+                GoodsCode = goods.GoodsCode,
+            };
+
+        }
     }
 }

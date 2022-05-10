@@ -6,6 +6,7 @@ using Store.Persistence.EF;
 using Store.Persistence.EF.Goodses;
 using Store.Services.Goodses;
 using Store.Services.Goodses.Contracts;
+using Store.Services.Goodses.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,6 +56,22 @@ namespace Store.Services.Test.Unit.Goodses
             _context.Goodses.Should().Contain(_ => _.GoodsCode.Equals(dto.GoodsCode));
             _context.Goodses.Should().Contain(_ => _.MaxInventory.Equals(dto.MaxInventory));
             _context.Goodses.Should().Contain(_ => _.MinInventory.Equals(dto.MinInventory));
+        }
+        [Fact]
+        private void Update_throw_goods_NotFoundException_when_goods_with_given_id_is_not_exist()
+        {
+            var GoodsCode = 2000;
+            var GoodsDTO = GenerateUpdateGoodsDto("editGoods");
+            Action expect = () => _Sut.Update(GoodsDTO, GoodsCode);
+            expect.Should().ThrowExactly<GoodsNotFoundException>();
+        }
+        [Fact]
+        private void Delete_throw_Goods_NotFoundException_When_Goods_with_given_id_is_not_exist()
+        {
+
+            var GoodsCode = 2000;
+            Action expect = () => _Sut.Delete(GoodsCode);
+            expect.Should().ThrowExactly<GoodsNotFoundException>();
         }
         [Fact]
         private void Update_updates_goods_properly()
@@ -219,6 +236,24 @@ namespace Store.Services.Test.Unit.Goodses
             except.Inventory.Should().Be(goods.Inventory);
             except.Cost.Should().Be(goods.Cost);
         }
+        private UpdateGoodsDTO GenerateUpdateGoodsDto(string title)
+        {
+            Category Category = new Category
+            {
+                Title = "لبنیات"
 
+            };
+            _context.Manipulate(_ => _.Categories.Add(Category));
+           return new UpdateGoodsDTO
+            {
+               CategoryId= Category.Id,
+               Cost=1000,
+               Inventory=12,
+               Name="شیر",
+               MaxInventory=30,
+               MinInventory=10
+            };
+
+        }
     }
 }

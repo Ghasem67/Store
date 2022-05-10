@@ -6,6 +6,7 @@ using Store.Persistence.EF;
 using Store.Persistence.EF.GoodsOutputs;
 using Store.Services.GoodsOutputs;
 using Store.Services.GoodsOutputs.Contracts;
+using Store.Services.GoodsOutputs.Exceptions;
 using Store.Specs.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -25,9 +26,17 @@ namespace Store.Specs.GoodsOutputs
     public class UpdateGoodsOutput : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _context;
+        UnitOfWork _unitOfWork ;
+        GoodsOutputRepository goodsOutputRepository ;
+        GoodsOutputService _sut ;
+        Action expect;
+        private Goods dto;
         public UpdateGoodsOutput(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();
+            _unitOfWork = new EFUnitOfWork(_context);
+            goodsOutputRepository = new EFGoodsOutPutRepository(_context);
+            _sut = new GoodsOutputAppService(_unitOfWork, goodsOutputRepository);
         }
         [Given("خروجی کالا 'شیر' به تعداد '2 عدد' قیمت '2000' به شماره' 20' وجود دارد")]
         private void Given()
@@ -72,9 +81,7 @@ namespace Store.Specs.GoodsOutputs
                 GoodsCode = 54,
                 Price = 1000
             };
-            UnitOfWork _unitOfWork = new EFUnitOfWork(_context);
-            GoodsOutputRepository goodsOutputRepository = new EFGoodsOutPutRepository(_context);
-            var _sut = new GoodsOutputAppService(_unitOfWork, goodsOutputRepository);
+           
             _sut.Update(updateGoodsOutput, updateGoodsOutput.GoodsCode);
         }
         [Then("خروجی کالا  با شماره '14' باید وجود داشته باشد ")]
@@ -90,6 +97,80 @@ namespace Store.Specs.GoodsOutputs
             Given();
             When();
             Then();
+        }
+        [Given("ورود کالا 'شیر' به تعداد '2 عدد' قیمت '2000' به شماره' 20' وجود دارد")]
+        private void DuplicateGiven()
+        {
+            var _category = new Category
+            {
+                Title = "لبنیات"
+            };
+
+            _context.Manipulate(_ => _.Categories.Add(_category));
+            dto = new Goods()
+            {
+                CategoryId = _context.Categories.FirstOrDefault().Id,
+                Cost = 1000,
+                GoodsCode = 20,
+                MaxInventory = 100,
+                Inventory = 0,
+                MinInventory = 10,
+                Name = "شیر",
+            };
+            _context.Manipulate(_ => _.Goodses.Add(dto));
+            GoodsOutput goodsOutput = new GoodsOutput
+            {
+                Number = 20,
+                Count = 2,
+                Date = new DateTime(2022, 4, 5, 0, 0, 0, 0),
+                GoodsCode = 20,
+                Price = 1000
+            };
+            _context.Manipulate(_ => _.GoodsOutputs.Add(goodsOutput));
+
+        }
+        [And("ورود کالا با شماره '14' وجود دارد")]
+        private void DuplicateAnd()
+        {
+            GoodsOutput goodsOutput = new GoodsOutput
+            {
+                Number = 14,
+                Count = 2,
+                Date = new DateTime(2022, 4, 5, 0, 0, 0, 0),
+                GoodsCode = dto.GoodsCode,
+                Price = 1000
+            };
+            _context.Manipulate(_ => _.GoodsOutputs.Add(goodsOutput));
+        }
+        [When("زمانی که  '20' به '14' تغییر می کند")]
+        private void DuplicateWhen()
+        {
+            UpdateGoodsOutputDTO updateGoodsOutput = new UpdateGoodsOutputDTO
+            {
+                Number = 14,
+                Count = 2,
+                Date = "2022, 4, 5, 0, 0, 0, 0",
+                GoodsCode = dto.GoodsCode,
+                Price = 1000
+            };
+
+
+            expect=()=> _sut.Update(updateGoodsOutput, updateGoodsOutput.GoodsCode);
+        }
+        [Then("خطا با عنوان 'شماره فاکتور تکراری است' باید رخ دهد")]
+        private void DuplicateThen()
+        {
+            expect.Should().ThrowExactly<DuplicateFactorNumberException>();
+        }
+
+        public void DuplicateRun()
+        {
+            Runner.RunScenario(
+                _ => DuplicateGiven(),
+                _ => DuplicateAnd(),
+                _ => DuplicateWhen(),
+                _ => DuplicateThen()
+                );
         }
     }
 }

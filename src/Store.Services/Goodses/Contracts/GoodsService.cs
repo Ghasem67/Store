@@ -11,7 +11,7 @@ namespace Store.Services.Goodses.Contracts
     {
         void Add(AddGoodsDTO addGoodsDTO);
         void Update(UpdateGoodsDTO updateGoodsDTO,int id);
-        void Delete(int id);
+        void Delete(int goodsCode);
         ShowgoodsDTO GetbyId(int goodsCode);
         HashSet<ShowgoodsDTO> GetAll();
 

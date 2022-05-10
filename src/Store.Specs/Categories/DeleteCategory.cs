@@ -12,6 +12,9 @@ using Store.Persistence.EF.Categories;
 using Store.Services.Categories;
 using FluentAssertions;
 using Xunit;
+using Store.Infrastracture.Application;
+using Store.Services.Categories.Contracts;
+using Store.Services.Goodses.Exceptions;
 
 namespace Store.Specs.Categories
 {
@@ -23,11 +26,17 @@ namespace Store.Specs.Categories
     public class DeleteCategory : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _context;
-
+        private readonly UnitOfWork _unitOfWork;
+        private readonly CategoryRepository categoRyrepository ;
+        private readonly CategoryService _sut ;
+        Action expect;
         Category category;
         public DeleteCategory(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();
+            _unitOfWork = new EFUnitOfWork(_context);
+            categoRyrepository = new EFCategoryRepository(_context);
+            _sut = new CategoryAppService(categoRyrepository, _unitOfWork);
         }
 
         [Given("دسته بندی با عنوان 'لبنیات' در سیستم وجود دارد")]
@@ -42,9 +51,7 @@ namespace Store.Specs.Categories
         [When("درخواست حذف دسته بندی 'لبنیات' ارسال می کنیم")]
         private void When()
         {
-            var _unitOfWork=new EFUnitOfWork(_context);
-            var categoRyrepository=new EFCategoryRepository(_context);
-            var _sut = new CategoryAppService(categoRyrepository, _unitOfWork);
+           
             
             _sut.Delete(category.Id);
         }
@@ -62,6 +69,53 @@ namespace Store.Specs.Categories
             Given();
             When();
             Then();
+        }
+        [Given("دسته بندی با عنوان 'لبنیات' در سیستم وجود دارد")]
+        private void HaveChildGiven()
+        {
+            category = new Category
+            {
+                Title = "لبنیات"
+            };
+            _context.Manipulate(_ => _.Categories.Add(category));
+            Goods goods = new Goods
+            {
+                CategoryId = category.Id,
+                Cost =1000,
+                GoodsCode=0987,
+                Inventory=10,
+                MaxInventory=100,
+                MinInventory=10,
+                Name="شیر"
+            };
+            _context.Manipulate(_ => _.Goodses.Add(goods));
+        }
+        [When("درخواست حذف دسته بندی 'لبنیات' ارسال می کنیم")]
+        private void HaveChildWhen()
+        {
+
+          expect=()=>  _sut.Delete(category.Id);
+        }
+        [Then("دسته بندی با عنوان 'لبنیات' حذف نمی شود")]
+        private void HaveChildThen()
+        {
+            var expect = _context.Categories.Where(x => x.Id.Equals(category.Id)).ToList();
+            expect.Should().HaveCount(1);
+
+        }
+        [And("خطا با عنوان 'دسته بندی  دارای فرزند می باشد' رخ می دهد")]
+        private void HaveChildAndThen()
+        {
+            expect.Should().ThrowExactly<CategoryHasChildrenException>();
+        }
+        [Fact]
+        private void DuplicateRun()
+        {
+            Runner.RunScenario(
+                _ => HaveChildGiven()
+                , _ => HaveChildWhen()
+                , _ => HaveChildThen()
+                , _ => HaveChildAndThen());
         }
     }
 }

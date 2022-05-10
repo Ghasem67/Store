@@ -91,7 +91,6 @@ namespace Store.Services.Test.Unit.Categories
         private void Delete_throw_Category_NotFoundException_When_category_with_given_id_is_not_exist()
         {
             var categoryId = 2000;
-            var categoryDTO = GenerateUpdateCategoryDto("editcategory");
             Action expect = () => _Sut.Delete(categoryId);
             expect.Should().ThrowExactly<CategoryNotFoundException>();
         }

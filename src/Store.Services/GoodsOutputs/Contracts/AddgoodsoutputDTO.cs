@@ -1,6 +1,6 @@
 ﻿namespace Store.Services.GoodsOutputs.Contracts
 {
-    public class AddgoodsoutputDTO
+    public class AddgoodsOutputDTO
     {
         public int Number { get; set; }
         public string Date { get; set; }

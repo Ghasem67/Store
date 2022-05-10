@@ -12,7 +12,7 @@ namespace Store.Services.Goodses.Contracts
     {
         void Add(Goods goods);
         void Delete(Goods goods);
-        Goods GetbyId(int id);
+        Goods GetbyId(int GoodsCode);
         ShowgoodsDTO GetOne(int id);
         HashSet<ShowgoodsDTO> GetAll();
 

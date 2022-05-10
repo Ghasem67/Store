@@ -24,7 +24,8 @@ namespace Store.Services.GoodsInputs
 
         public void Add(AddGoodsInputDTO addGoodsInputDto)
         {
-           
+            CheckDuplicate(addGoodsInputDto.Number);
+
             GoodsInput goodsInput = new()
             {
                 Count = addGoodsInputDto.Count,
@@ -65,9 +66,9 @@ namespace Store.Services.GoodsInputs
             goodsInput.Date = IsDateTimeFormat(updateGoodsInputDTO.Date);
             _unitOfWork.Commit();
         }
-        private GoodsInput CheckIsNull(int id)
+        private GoodsInput CheckIsNull(int number)
         {
-            var goodsInput = _goodsInputRepository.GetById(id);
+            var goodsInput = _goodsInputRepository.GetById(number);
             if (goodsInput == null)
             {
                 throw new GoodsInputNotFoundException();
@@ -83,6 +84,15 @@ namespace Store.Services.GoodsInputs
                 throw new DatetimeFormatException();
             }
             return date;
+        }
+        private GoodsInput  CheckDuplicate(int number)
+        {
+            var goodsInput = _goodsInputRepository.GetById(number);
+            if (goodsInput != null)
+            {
+                throw new DuplicateFactorNumberException();
+            }
+            return goodsInput;
         }
     }
 }

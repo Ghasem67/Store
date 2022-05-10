@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Store.Entities;
+using Store.Services.Goodses.Exceptions;
 using Store.Infrastracture.Application;
 using Store.Infrastracture.Tests;
 using Store.Persistence.EF;
@@ -25,11 +26,18 @@ namespace Store.Specs.Goodses
     public class GetGoods : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _dataContext;
+        UnitOfWork unitOfWork ;
+        GoodsRepository goodsRepository ;
+        GoodsService _sut;
         private List<Goods> goodsList;
-        private HashSet<ShowgoodsDTO> expect;
+        Action Expect;
+        private HashSet<ShowgoodsDTO> goodsHashset;
         public GetGoods(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();
+            unitOfWork = new EFUnitOfWork(_dataContext);
+            goodsRepository = new EFGoodsRepository(_dataContext);
+            _sut = new GoodsAppService(goodsRepository, unitOfWork);
         }
         [Given("کالای شیر پگاه با قیمت 1000 ، حداقل موجودی 10 ،حداکثر موجودی 100 ، موجودی 15" +
             " کالای شیر رامک با قیمت 1000 ، حداقل موجودی 10 ،حداکثر موجودی 100 ، موجودی 15  ")]
@@ -52,28 +60,26 @@ namespace Store.Specs.Goodses
         [When("درخواست نمایش اطلاعات ارسال می شود")]
         private void When()
         {
-            UnitOfWork unitOfWork = new EFUnitOfWork(_dataContext);
-            GoodsRepository goodsRepository = new EFGoodsRepository(_dataContext);
-            GoodsService goodsService = new GoodsAppService(goodsRepository, unitOfWork);
-            expect = goodsService.GetAll();
+           
+            goodsHashset = _sut.GetAll();
            
         }
         [Then("فهرست محصولات نمایش داده می شود")]
         private void Then()
         {
-            expect.Should().Contain(_ => _.Name == goodsList[0].Name);
-            expect.Should().Contain(_ => _.GoodsCode == goodsList[0].GoodsCode);
-            expect.Should().Contain(_ => _.MaxInventory == goodsList[0].MaxInventory);
-            expect.Should().Contain(_ => _.MinInventory == goodsList[0].MinInventory);
-            expect.Should().Contain(_ => _.Cost == goodsList[0].Cost);
-            expect.Should().Contain(_ => _.Inventory == goodsList[0].Inventory);
+            goodsHashset.Should().Contain(_ => _.Name == goodsList[0].Name);
+            goodsHashset.Should().Contain(_ => _.GoodsCode == goodsList[0].GoodsCode);
+            goodsHashset.Should().Contain(_ => _.MaxInventory == goodsList[0].MaxInventory);
+            goodsHashset.Should().Contain(_ => _.MinInventory == goodsList[0].MinInventory);
+            goodsHashset.Should().Contain(_ => _.Cost == goodsList[0].Cost);
+            goodsHashset.Should().Contain(_ => _.Inventory == goodsList[0].Inventory);
 
-            expect.Should().Contain(_ => _.Name == goodsList[1].Name);
-            expect.Should().Contain(_ => _.GoodsCode == goodsList[1].GoodsCode);
-            expect.Should().Contain(_ => _.MaxInventory == goodsList[1].MaxInventory);
-            expect.Should().Contain(_ => _.MinInventory == goodsList[1].MinInventory);
-            expect.Should().Contain(_ => _.Cost == goodsList[1].Cost);
-            expect.Should().Contain(_ => _.Inventory == goodsList[1].Inventory);
+            goodsHashset.Should().Contain(_ => _.Name == goodsList[1].Name);
+            goodsHashset.Should().Contain(_ => _.GoodsCode == goodsList[1].GoodsCode);
+            goodsHashset.Should().Contain(_ => _.MaxInventory == goodsList[1].MaxInventory);
+            goodsHashset.Should().Contain(_ => _.MinInventory == goodsList[1].MinInventory);
+            goodsHashset.Should().Contain(_ => _.Cost == goodsList[1].Cost);
+            goodsHashset.Should().Contain(_ => _.Inventory == goodsList[1].Inventory);
         }
         [Fact]
         private void Run()
@@ -81,6 +87,32 @@ namespace Store.Specs.Goodses
             Given();
             When();
             Then();
+        }
+        [Given("کالایی در سیستم وجود ندارد")]
+        private void NotHaveGiven()
+        {
+
+        }
+
+        [When("درخواست نمایش اطلاعات ارسال می شود")]
+        private void NotHaveWhen()
+        {
+
+            Expect = () => _sut.GetAll();
+        }
+        [Then(" خطایی با عنوان 'اطلاعاتی جهت نمایش وجود ندارد' در سیستم رخ می دهد")]
+        private void NotHaveThen()
+        {
+            Expect.Should().ThrowExactly<ThereIsnotInformationToDisplay>();
+        }
+        [Fact]
+        private void NotHaveRun()
+        {
+            Runner.RunScenario(
+            _ => NotHaveGiven(),
+            _ => NotHaveWhen(),
+            _ => NotHaveThen()
+            );
         }
     }
 }

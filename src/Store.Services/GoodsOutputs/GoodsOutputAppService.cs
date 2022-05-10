@@ -21,9 +21,9 @@ namespace Store.Services.GoodsOutputs
             _repository = repository;
         }
 
-        public void Add(AddgoodsoutputDTO addgoodsoutputDTO)
+        public void Add(AddgoodsOutputDTO addgoodsoutputDTO)
         {
-           
+            CheckDuplicate(addgoodsoutputDTO.Number);
             GoodsOutput goodoutput=new GoodsOutput
             {
                 Count = addgoodsoutputDTO.Count,
@@ -88,6 +88,15 @@ namespace Store.Services.GoodsOutputs
                 throw new DatetimeFormatException();
             }
             return date;
+        }
+        private GoodsOutput CheckDuplicate(int number)
+        {
+            var goodsOutput = _repository.GetById(number);
+            if (goodsOutput != null)
+            {
+                throw new DuplicateFactorNumberException();
+            }
+            return goodsOutput;
         }
     }
 }

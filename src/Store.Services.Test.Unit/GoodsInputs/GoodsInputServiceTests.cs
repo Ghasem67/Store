@@ -6,6 +6,7 @@ using Store.Persistence.EF;
 using Store.Persistence.EF.GoodsInputs;
 using Store.Services.GoodsInputs;
 using Store.Services.GoodsInputs.Contracts;
+using Store.Services.GoodsInputs.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,14 +21,14 @@ namespace Store.Services.Test.Unit.GoodsInputs
         private readonly EFDataContext _eFDataContext;
         private readonly UnitOfWork _unitOfWork;
         private readonly GoodsInputRepository _goodsInputRepository;
-        private readonly GoodsInputService _sut;
+        private readonly GoodsInputService _Sut;
         public GoodsInputServiceTests()
         {
             _eFDataContext = new EFInMemoryDatabase()
                 .CreateDataContext<EFDataContext>();
             _unitOfWork = new EFUnitOfWork(_eFDataContext);
             _goodsInputRepository = new EFGoodsInputRepository(_eFDataContext);
-            _sut = new GoodsInputAppService(_unitOfWork, _goodsInputRepository);
+            _Sut = new GoodsInputAppService(_unitOfWork, _goodsInputRepository);
         }
         [Fact]
         private void Adds_adds_goodsInput_properly()
@@ -41,7 +42,7 @@ namespace Store.Services.Test.Unit.GoodsInputs
                 Price = 1000,
                 GoodsCode = goods.GoodsCode,
             };
-            _sut.Add(addGoodsInputDTO);
+            _Sut.Add(addGoodsInputDTO);
             _eFDataContext.GoodsInputs.Should().Contain(_ => _.Count.Equals(addGoodsInputDTO.Count));
             _eFDataContext.GoodsInputs.Should().Contain(_ => _.Date.ToShortDateString().Equals(addGoodsInputDTO.Date));
             _eFDataContext.GoodsInputs.Should().Contain(_ => _.GoodsCode.Equals(addGoodsInputDTO.GoodsCode));
@@ -52,7 +53,7 @@ namespace Store.Services.Test.Unit.GoodsInputs
         {
             var goods = GenerateGoodsInput();
            
-          var expect=  _sut.GetById(goods.Number);
+          var expect=  _Sut.GetById(goods.Number);
             expect.Count.Should().Be(goods.Count);
             expect.Date.Should().Be(goods.Date.ToShortDateString());
             expect.GoodsCode.Should().Be(goods.GoodsCode);
@@ -70,7 +71,7 @@ namespace Store.Services.Test.Unit.GoodsInputs
                 Price = 2000,
                 GoodsCode = goodsInput.GoodsCode,
             };
-            _sut.Update(updateGoodsInputDTO, goodsInput.Number);
+            _Sut.Update(updateGoodsInputDTO, goodsInput.Number);
             var expect = _eFDataContext.GoodsInputs.FirstOrDefault(_ => _.GoodsCode == updateGoodsInputDTO.GoodsCode);
             expect.Number.Should().Be(updateGoodsInputDTO.Number);
             expect.Date.ToShortDateString().Should().Be(updateGoodsInputDTO.Date);
@@ -80,10 +81,26 @@ namespace Store.Services.Test.Unit.GoodsInputs
 
         }
         [Fact]
+        private void Update_throw_goodsInput_NotFoundException_when_goodsInput_with_given_id_is_not_exist()
+        {
+            var number = 2000;
+            var goodsInputDTO = GenerateUpdateGoodsInputDto();
+            Action expect = () => _Sut.Update(goodsInputDTO, number);
+            expect.Should().ThrowExactly<GoodsInputNotFoundException>();
+        }
+        [Fact]
+        private void Delete_throw_goodsInput_NotFoundException_When_goodsInput_with_given_id_is_not_exist()
+        {
+
+            var number = 2000;
+            Action expect = () => _Sut.Delete(number);
+            expect.Should().ThrowExactly<GoodsInputNotFoundException>();
+        }
+        [Fact]
         private void Delete_deletes_goodsInput_properly()
         {
             var goodsInput = GenerateGoodsInput();
-            _sut.Delete(goodsInput.GoodsCode);
+            _Sut.Delete(goodsInput.GoodsCode);
             var expect = _eFDataContext.GoodsInputs.FirstOrDefault(_ => _.GoodsCode.Equals(goodsInput.GoodsCode));
             expect.Should().BeNull();
         }
@@ -91,7 +108,7 @@ namespace Store.Services.Test.Unit.GoodsInputs
         private void GEtAll_getalls_goodsinput_properly()
         {
           var goodsInputList=  genaratelistgoodsInput();
-           var expect= _sut.GetAll();
+           var expect= _Sut.GetAll();
             expect.Should().Contain(_ => _.Date == goodsInputList[0].Date.ToShortDateString());
             expect.Should().Contain(_ => _.Count == goodsInputList[0].Count);
             expect.Should().Contain(_ => _.GoodsCode == goodsInputList[0].GoodsCode);
@@ -171,6 +188,20 @@ namespace Store.Services.Test.Unit.GoodsInputs
             };
             _eFDataContext.Manipulate(_ => _.GoodsInputs.Add(goodsInput));
             return goodsInput;
+        }
+        private UpdateGoodsInputDTO GenerateUpdateGoodsInputDto()
+        {
+         var goods=generategoods();
+
+            return new UpdateGoodsInputDTO
+            {
+                Count = 1,
+                Date = new DateTime(2022, 2, 2,0,0,0,0).ToShortDateString(),
+                Number = 12,
+                Price = 1000,
+                GoodsCode = goods.GoodsCode,
+            };
+
         }
     }
 }

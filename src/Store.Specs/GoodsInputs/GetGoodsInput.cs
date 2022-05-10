@@ -6,6 +6,7 @@ using Store.Persistence.EF;
 using Store.Persistence.EF.GoodsInputs;
 using Store.Services.GoodsInputs;
 using Store.Services.GoodsInputs.Contracts;
+using Store.Services.GoodsInputs.Exceptions;
 using Store.Specs.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -25,11 +26,18 @@ namespace Store.Specs.GoodsInputs
     public class GetGoodsInput : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _context;
-        private List<GoodsInput> GoodsInputList;
-        private HashSet<ShowGoodsInputDTO> expect;
+        UnitOfWork _unitOfWork ;
+        GoodsInputRepository goodsInputRepository ;
+        GoodsInputService _sut ;
+        private List<GoodsInput> GoodsInputList ;
+        private HashSet<ShowGoodsInputDTO> GoodsInputsexpect;
+        Action expect;
         public GetGoodsInput(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();
+            _unitOfWork = new EFUnitOfWork(_context);
+            goodsInputRepository = new EFGoodsInputRepository(_context);
+            _sut = new GoodsInputAppService(_unitOfWork, goodsInputRepository);
         }
         [Given("ورود کالا با شماره '12' وجود دارد")]
         private void Given()
@@ -75,22 +83,22 @@ namespace Store.Specs.GoodsInputs
             UnitOfWork _unitOfWork = new EFUnitOfWork(_context);
             GoodsInputRepository goodsInputRepository = new EFGoodsInputRepository(_context);
             var _sut = new GoodsInputAppService(_unitOfWork, goodsInputRepository);
-            expect= _sut.GetAll();
+            GoodsInputsexpect = _sut.GetAll();
         }
         [Then("فهرست ورود کالا نمایش داده می شود.")]
         private void Then()
         {
-            expect.Should().Contain(_ => _.Count == GoodsInputList[0].Count);
-            expect.Should().Contain(_ => _.GoodsCode == GoodsInputList[0].GoodsCode);
-            expect.Should().Contain(_ => _.Price == GoodsInputList[0].Price);
-            expect.Should().Contain(_ => _.Date == GoodsInputList[0].Date.ToShortDateString());
-            expect.Should().Contain(_ => _.Number == GoodsInputList[0].Number);
+            GoodsInputsexpect.Should().Contain(_ => _.Count == GoodsInputList[0].Count);
+            GoodsInputsexpect.Should().Contain(_ => _.GoodsCode == GoodsInputList[0].GoodsCode);
+            GoodsInputsexpect.Should().Contain(_ => _.Price == GoodsInputList[0].Price);
+            GoodsInputsexpect.Should().Contain(_ => _.Date == GoodsInputList[0].Date.ToShortDateString());
+            GoodsInputsexpect.Should().Contain(_ => _.Number == GoodsInputList[0].Number);
 
-            expect.Should().Contain(_ => _.Count == GoodsInputList[1].Count);
-            expect.Should().Contain(_ => _.GoodsCode == GoodsInputList[1].GoodsCode);
-            expect.Should().Contain(_ => _.Price == GoodsInputList[1].Price);
-            expect.Should().Contain(_ => _.Date == GoodsInputList[1].Date.ToShortDateString());
-            expect.Should().Contain(_ => _.Number == GoodsInputList[1].Number);
+            GoodsInputsexpect.Should().Contain(_ => _.Count == GoodsInputList[1].Count);
+            GoodsInputsexpect.Should().Contain(_ => _.GoodsCode == GoodsInputList[1].GoodsCode);
+            GoodsInputsexpect.Should().Contain(_ => _.Price == GoodsInputList[1].Price);
+            GoodsInputsexpect.Should().Contain(_ => _.Date == GoodsInputList[1].Date.ToShortDateString());
+            GoodsInputsexpect.Should().Contain(_ => _.Number == GoodsInputList[1].Number);
         }
         [Fact]
         private void Run()
@@ -98,6 +106,32 @@ namespace Store.Specs.GoodsInputs
             Given();
             When () ;
             Then();
+        }
+        [Given("ورود کالایی در سیستم وجود ندارد")]
+        private void NotHaveGiven()
+        {
+
+        }
+
+        [When("درخواست نمایش اطلاعات ارسال می شود")]
+        private void NotHaveWhen()
+        {
+
+            expect = () => _sut.GetAll();
+        }
+        [Then(" خطایی با عنوان 'اطلاعاتی جهت نمایش وجود ندارد' در سیستم رخ می دهد")]
+        private void NotHaveThen()
+        {
+            expect.Should().ThrowExactly<ThereIsnotInformationToDisplay>();
+        }
+        [Fact]
+        private void NotHaveRun()
+        {
+            Runner.RunScenario(
+            _ => NotHaveGiven(),
+            _ => NotHaveWhen(),
+            _ => NotHaveThen()
+            );
         }
     }
 }

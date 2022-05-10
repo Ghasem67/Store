@@ -25,11 +25,18 @@ namespace Store.Specs.GoodsOutputs
     public class GetGoodsOutput : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _context;
-        private HashSet<ShowGoodsOutputDTO> expect;
+        UnitOfWork _unitOfWork;
+        GoodsOutputRepository goodsOutputRepository ;
+       GoodsOutputService _sut;
+        private HashSet<ShowGoodsOutputDTO> GoodsOutputHashSet;
         List<GoodsOutput> GoodsOutputList;
+        Action expect;
         public GetGoodsOutput(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();
+            _unitOfWork = new EFUnitOfWork(_context);
+            goodsOutputRepository = new EFGoodsOutPutRepository(_context);
+            _sut = new GoodsOutputAppService(_unitOfWork, goodsOutputRepository);
         }
         [Given("ورود کالا با شماره '12' وجود دارد")]
         private void Given()
@@ -77,25 +84,23 @@ namespace Store.Specs.GoodsOutputs
         [When("درخواست نمایش ورود کالا ارسال می شود")]
         public void When()
         {
-            UnitOfWork _unitOfWork = new EFUnitOfWork(_context);
-            GoodsOutputRepository goodsOutputRepository = new EFGoodsOutPutRepository(_context);
-            var _sut = new GoodsOutputAppService(_unitOfWork, goodsOutputRepository);
-            expect = _sut.GetAll();
+           
+            GoodsOutputHashSet = _sut.GetAll();
         }
         [Then("فهرست ورود کالا نمایش داده می شود.")]
         private void Then()
         {
-            expect.Should().Contain(_ => _.Count == GoodsOutputList[0].Count);
-            expect.Should().Contain(_ => _.GoodsCode == GoodsOutputList[0].GoodsCode);
-            expect.Should().Contain(_ => _.Price == GoodsOutputList[0].Price);
-            expect.Should().Contain(_ => _.Date == GoodsOutputList[0].Date.ToShortDateString());
-            expect.Should().Contain(_ => _.Number == GoodsOutputList[0].Number);
+            GoodsOutputHashSet.Should().Contain(_ => _.Count == GoodsOutputList[0].Count);
+            GoodsOutputHashSet.Should().Contain(_ => _.GoodsCode == GoodsOutputList[0].GoodsCode);
+            GoodsOutputHashSet.Should().Contain(_ => _.Price == GoodsOutputList[0].Price);
+            GoodsOutputHashSet.Should().Contain(_ => _.Date == GoodsOutputList[0].Date.ToShortDateString());
+            GoodsOutputHashSet.Should().Contain(_ => _.Number == GoodsOutputList[0].Number);
 
-            expect.Should().Contain(_ => _.Count == GoodsOutputList[1].Count);
-            expect.Should().Contain(_ => _.GoodsCode == GoodsOutputList[1].GoodsCode);
-            expect.Should().Contain(_ => _.Price == GoodsOutputList[1].Price);
-            expect.Should().Contain(_ => _.Date == GoodsOutputList[1].Date.ToShortDateString());
-            expect.Should().Contain(_ => _.Number == GoodsOutputList[1].Number);
+            GoodsOutputHashSet.Should().Contain(_ => _.Count == GoodsOutputList[1].Count);
+            GoodsOutputHashSet.Should().Contain(_ => _.GoodsCode == GoodsOutputList[1].GoodsCode);
+            GoodsOutputHashSet.Should().Contain(_ => _.Price == GoodsOutputList[1].Price);
+            GoodsOutputHashSet.Should().Contain(_ => _.Date == GoodsOutputList[1].Date.ToShortDateString());
+            GoodsOutputHashSet.Should().Contain(_ => _.Number == GoodsOutputList[1].Number);
         }
         [Fact]
         private void Run()
@@ -103,6 +108,32 @@ namespace Store.Specs.GoodsOutputs
             Given();
             When();
             Then();
+        }
+        [Given("ورود کالایی در سیستم وجود ندارد")]
+        private void NotHaveGiven()
+        {
+
+        }
+
+        [When("درخواست نمایش اطلاعات ارسال می شود")]
+        private void NotHaveWhen()
+        {
+
+            expect = () => _sut.GetAll();
+        }
+        [Then(" خطایی با عنوان 'اطلاعاتی جهت نمایش وجود ندارد' در سیستم رخ می دهد")]
+        private void NotHaveThen()
+        {
+            expect.Should().ThrowExactly<ThereIsnotInformationToDisplay>();
+        }
+        [Fact]
+        private void NotHaveRun()
+        {
+            Runner.RunScenario(
+            _ => NotHaveGiven(),
+            _ => NotHaveWhen(),
+            _ => NotHaveThen()
+            );
         }
     }
 }

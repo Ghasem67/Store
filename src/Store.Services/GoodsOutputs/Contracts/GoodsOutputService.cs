@@ -10,7 +10,7 @@ namespace Store.Services.GoodsOutputs.Contracts
 {
     public interface GoodsOutputService:Service
     {
-        void Add(AddgoodsoutputDTO addgoodsoutputDTO);
+        void Add(AddgoodsOutputDTO addgoodsoutputDTO);
         void Delete(int id);
         void Update(UpdateGoodsOutputDTO updateGoodsOutputDTO, int id);
         ShowGoodsOutputDTO GetById(int id);

@@ -105,7 +105,7 @@ namespace Store.Services.Test.Unit.Categories
                 Title = "khoshkbar"
             };
             Action expect = () => _Sut.Add(updateCategoryDTO);
-            expect.Should().NotBeNull();
+            expect.Should().ThrowExactly<DuplicateValueException>();
         }
         private static AddCategoryDTO GenerateAddCategoryDto()
         {

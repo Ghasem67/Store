@@ -27,7 +27,7 @@ namespace Store.RestAPI.Controllers
             return _service.GetById(id);
         }
         [HttpPost()]
-        public void Add(AddgoodsoutputDTO addgoodsoutputDTO)
+        public void Add(AddgoodsOutputDTO addgoodsoutputDTO)
         {
             _service.Add(addgoodsoutputDTO);
         }

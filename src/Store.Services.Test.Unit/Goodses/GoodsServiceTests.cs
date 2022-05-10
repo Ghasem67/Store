@@ -57,6 +57,39 @@ namespace Store.Services.Test.Unit.Goodses
             _context.Goodses.Should().Contain(_ => _.MaxInventory.Equals(dto.MaxInventory));
             _context.Goodses.Should().Contain(_ => _.MinInventory.Equals(dto.MinInventory));
         }
+
+        [Fact]
+        private void Adds_adds_goods_throwException_IsExist()
+        {
+            Category Category = new Category
+            {
+                Title = "لبنیات"
+
+            };
+            _context.Manipulate(_ => _.Add(Category));
+            Goods goods = new Goods
+            {
+                CategoryId = Category.Id,
+                Cost = 1000,
+                GoodsCode = 12,
+                MaxInventory = 1000,
+                MinInventory = 10,
+                Name = "شیر پگاه"
+            };
+            _context.Manipulate(_ => _.Goodses.Add(goods));
+            AddGoodsDTO addGoodsDTO = new AddGoodsDTO
+            {
+                CategoryId = Category.Id,
+                Cost = 1000,
+                GoodsCode = 12,
+                MaxInventory = 1000,
+                MinInventory = 10,
+                Name = "شیر پگاه"
+            };
+            Action expect = () => _Sut.Add(addGoodsDTO);
+            expect.Should().ThrowExactly<DuplicateNameException>();
+        }
+
         [Fact]
         private void Update_throw_goods_NotFoundException_when_goods_with_given_id_is_not_exist()
         {

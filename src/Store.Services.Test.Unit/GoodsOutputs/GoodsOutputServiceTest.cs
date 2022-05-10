@@ -34,7 +34,7 @@ namespace Store.Services.Test.Unit.GoodsOutputs
         private void Adds_adds_goodsoutput_properly()
         {
             var goods = generategoods();
-            AddgoodsoutputDTO addGoodsOutputDTO = new AddgoodsoutputDTO
+            AddgoodsOutputDTO addGoodsOutputDTO = new AddgoodsOutputDTO
             {
                 Count = 1,
                 Date = DateTime.Now.ToShortDateString(),
@@ -46,6 +46,31 @@ namespace Store.Services.Test.Unit.GoodsOutputs
             _context.GoodsOutputs.Should().Contain(_ => _.Count.Equals(addGoodsOutputDTO.Count));
             _context.GoodsOutputs.Should().Contain(_ => _.Date.ToShortDateString().Equals(addGoodsOutputDTO.Date));
             _context.GoodsOutputs.Should().Contain(_ => _.GoodsCode.Equals(addGoodsOutputDTO.GoodsCode));
+        }
+        [Fact]
+        private void Adds_adds_goodsoutput_throwException_IsExist()
+        {
+            var goods = generategoods();
+            GoodsOutput goodsOutput = new GoodsOutput
+            {
+                Count = 1,
+                Date = DateTime.Now,
+                Number = 12,
+                Price = 1000,
+                GoodsCode = goods.GoodsCode,
+            };
+            _context.Manipulate(_ => _.GoodsOutputs.Add(goodsOutput));
+            AddgoodsOutputDTO addGoodsOutputDTO = new AddgoodsOutputDTO
+            {
+                Count = 1,
+                Date = DateTime.Now.ToShortDateString(),
+                Number = 12,
+                Price = 1000,
+                GoodsCode = goods.GoodsCode,
+            };
+           Action expect=()=> _sut.Add(addGoodsOutputDTO);
+            expect.Should().ThrowExactly<DuplicateFactorNumberException>();
+           
         }
         [Fact]
         private void Update_updates_goods_Properly()

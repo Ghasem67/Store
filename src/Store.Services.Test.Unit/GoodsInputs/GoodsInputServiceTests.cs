@@ -49,6 +49,31 @@ namespace Store.Services.Test.Unit.GoodsInputs
         }
 
         [Fact]
+        private void Adds_adds_goodsinput_throwException_IsExist()
+        {
+            var goods = generategoods();
+            GoodsInput goodsInput = new GoodsInput
+            {
+                Count = 1,
+                Date = DateTime.Now,
+                Number = 12,
+                Price = 1000,
+                GoodsCode = goods.GoodsCode,
+            };
+            _eFDataContext.Manipulate(_ => _.GoodsInputs.Add(goodsInput));
+            AddGoodsInputDTO addGoodsInputDTO = new AddGoodsInputDTO
+            {
+                Count = 1,
+                Date = DateTime.Now.ToShortDateString(),
+                Number = 12,
+                Price = 1000,
+                GoodsCode = goods.GoodsCode,
+            };
+            Action expect = () => _Sut.Add(addGoodsInputDTO);
+            expect.Should().ThrowExactly<DuplicateFactorNumberException>();
+        }
+
+        [Fact]
         private void GetById_Getbyids_goodsInput_properly()
         {
             var goods = GenerateGoodsInput();

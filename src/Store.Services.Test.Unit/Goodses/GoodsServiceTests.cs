@@ -87,7 +87,7 @@ namespace Store.Services.Test.Unit.Goodses
                 Name = "شیر پگاه"
             };
             Action expect = () => _Sut.Add(addGoodsDTO);
-            expect.Should().ThrowExactly<DuplicateNameException>();
+            expect.Should().ThrowExactly<DuplicateGoodsCodeException>();
         }
 
         [Fact]

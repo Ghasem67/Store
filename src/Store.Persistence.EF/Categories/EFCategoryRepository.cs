@@ -38,6 +38,11 @@ namespace Store.Persistence.EF.Categories
             return _context.FirstOrDefault(x=>x.Id.Equals(id));
         }
 
+        public Category GetByTitle(string title)
+        {
+            return _context.FirstOrDefault(_ => _.Title.Equals(title));
+        }
+
         public ShowCategoryDTO GetOne(int id)
         {
             return _context.Select(_ => new ShowCategoryDTO { Id = _.Id, Title = _.Title }).FirstOrDefault(_=>_.Id.Equals(id));

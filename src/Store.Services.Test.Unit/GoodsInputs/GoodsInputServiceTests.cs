@@ -20,7 +20,7 @@ namespace Store.Services.Test.Unit.GoodsInputs
     {
         private readonly EFDataContext _eFDataContext;
         private readonly UnitOfWork _unitOfWork;
-        private readonly GoodsInputRepository _goodsInputRepository;
+        private readonly Categoryrepository _goodsInputRepository;
         private readonly GoodsInputService _Sut;
         public GoodsInputServiceTests()
         {

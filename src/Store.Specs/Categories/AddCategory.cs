@@ -65,42 +65,6 @@ namespace Store.Specs.Categories
             When();
             Then();
         }
-        [Given("دسته بندی کالایی با عنوان 'لبنیات' وجود دارد")]
-        private void DuplicateGiven()
-        {
-            Category category = new Category
-            {
-                Title = "لبنیات"
-            };
-            _dataContext.Manipulate(_ => _.Add(category));
-        }
-        [When("دسته بندی با عنوان 'لبنیات' تعریف می کنم")]
-        private void DuplicateWhen()
-        {
-            _dto = new AddCategoryDTO
-            {
-                Title = "لبنیات"
-            };
-            expect = () => _sut.Add(_dto);
-        }
-        [Then("تنها یک دسته بندی با عنوان 'لبنیات' باید وجود داشته باشد")]
-        private void DuplicateThen()
-        {
-            _dataContext.Categories.Where(_ => _.Title.Equals(_dto.Title)).Should().HaveCount(1);
-        }
-        [And("خطا با عنوان 'عنوان دسته بندی تکراری است' باید رخ دهد")]
-        private void And()
-        {
-            expect.Should().ThrowExactly<DuplicateValueException>();
-        }
-        [Fact]
-        private void DuplicateRun()
-        {
-            Runner.RunScenario(
-                _=> DuplicateGiven()
-                ,_=> DuplicateWhen()
-                ,_=> DuplicateThen()
-                ,_=>And());
-        }
+        
     }
 }

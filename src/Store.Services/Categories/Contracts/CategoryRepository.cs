@@ -14,6 +14,7 @@ namespace Store.Services.Categories.Contracts
         void Delete(Category category);
         Category GetById(int id);
         ShowCategoryDTO GetOne(int id);
+        Category GetByTitle(string title);
         HashSet<ShowCategoryDTO> GetAll();
 
     }

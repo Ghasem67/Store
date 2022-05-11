@@ -64,7 +64,7 @@ namespace Store.Specs.GoodsInputs
         private void When()
         {
             UnitOfWork _unitOfWork = new EFUnitOfWork(_context);
-            GoodsInputRepository goodsInputRepository = new EFGoodsInputRepository(_context);
+            Categoryrepository goodsInputRepository = new EFGoodsInputRepository(_context);
             var _sut = new GoodsInputAppService(_unitOfWork, goodsInputRepository);
             _sut.Delete(12);
         }

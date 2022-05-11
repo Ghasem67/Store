@@ -23,6 +23,11 @@ namespace Store.Services.Categories
 
         public void Add(AddCategoryDTO addCategoryDTO)
         {
+            var OneGoods = _categoryRepository.GetByTitle(addCategoryDTO.Title);
+            if (OneGoods != null)
+            {
+                throw new DuplicateValueException();
+            }
             Category category = new()
             {
                 Title = addCategoryDTO.Title

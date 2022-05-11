@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Store.Services.GoodsInputs.Contracts
 {
-    public interface GoodsInputRepository:Repository
+    public interface Categoryrepository:Repository
     {
         void Add(GoodsInput goodsInput);
         void Delete(GoodsInput goodsInput);

@@ -12,11 +12,11 @@ namespace Store.Services.GoodsInputs
 {
     public class GoodsInputAppService : GoodsInputService
     {
-        private readonly GoodsInputRepository _goodsInputRepository;
+        private readonly Categoryrepository _goodsInputRepository;
         private readonly UnitOfWork _unitOfWork;
 
         public GoodsInputAppService(UnitOfWork unitOfWork,
-            GoodsInputRepository goodsRepository)
+            Categoryrepository goodsRepository)
         {
             _unitOfWork = unitOfWork;
             _goodsInputRepository = goodsRepository;

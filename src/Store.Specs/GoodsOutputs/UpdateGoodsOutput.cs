@@ -49,7 +49,7 @@ namespace Store.Specs.GoodsOutputs
             _context.Manipulate(_ => _.Categories.Add(_category));
             Goods dto = new Goods()
             {
-                CategoryId = _context.Categories.OrderByDescending(_ => _.Id).FirstOrDefault().Id,
+                CategoryId = _category.Id,
                 Cost = 1000,
                 GoodsCode = 55,
                 MaxInventory = 100,
@@ -65,7 +65,7 @@ namespace Store.Specs.GoodsOutputs
                 Number = 14,
                 Count = 2,
                 Date = new DateTime(2022, 4, 5, 0, 0, 0, 0),
-                GoodsCode = 54,
+                GoodsCode = _context.Goodses.FirstOrDefault().GoodsCode,
                 Price = 1000
             };
             _context.Manipulate(_ => _.GoodsOutputs.Add(goodsOutput));
@@ -75,19 +75,19 @@ namespace Store.Specs.GoodsOutputs
         {
             UpdateGoodsOutputDTO updateGoodsOutput = new UpdateGoodsOutputDTO
             {
-                Number = 18,
+                Number = 14,
                 Count = 2,
                 Date = "2022, 4, 5, 0, 0, 0, 0",
                 GoodsCode = 54,
                 Price = 1000
             };
            
-            _sut.Update(updateGoodsOutput, updateGoodsOutput.GoodsCode);
+            _sut.Update(updateGoodsOutput, _context.GoodsOutputs.FirstOrDefault().Number);
         }
         [Then("خروجی کالا  با شماره '14' باید وجود داشته باشد ")]
         private void Then()
         {
-            var expect = _context.GoodsOutputs.OrderByDescending(x => x.Date).FirstOrDefault(_ => _.Number.Equals(14));
+            var expect = _context.GoodsOutputs.FirstOrDefault(_ => _.Number.Equals(14));
             expect.Number.Should().Be(14);
 
         }

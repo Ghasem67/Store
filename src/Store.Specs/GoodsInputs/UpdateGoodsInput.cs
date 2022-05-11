@@ -27,7 +27,7 @@ namespace Store.Specs.GoodsInputs
     {
         private readonly EFDataContext _dataContext;
         UnitOfWork _unitOfWork;
-        GoodsInputRepository goodsInputRepository;
+        Categoryrepository goodsInputRepository;
         GoodsInputService _sut;
         private Goods dto;
         Action expect;

@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Store.Specs.Infrastructure
 {
-    public class ConfigurationFixture
+    public class ConfigurationFixture 
     {
         public TestSettings Value { get; private set; }
 

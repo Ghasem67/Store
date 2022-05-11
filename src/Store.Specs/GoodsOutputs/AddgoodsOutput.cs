@@ -56,11 +56,12 @@ namespace Store.Specs.GoodsOutputs
             {
                 CategoryId = _dataContext.Categories.FirstOrDefault().Id,
                 Cost = 1000,
-                GoodsCode = 28,
+                GoodsCode = 100,
                 MaxInventory = 100,
                 Inventory = 0,
                 MinInventory = 10,
                 Name = "شیر",
+                Category= _dataContext.Categories.FirstOrDefault()
             };
             _dataContext.Manipulate(_ => _.Goodses.Add(dto));
             AddgoodsOutputDTO goodsoutput = new AddgoodsOutputDTO
@@ -68,7 +69,7 @@ namespace Store.Specs.GoodsOutputs
                 Number = 28,
                 Count = 2,
                 Date = "2022 - 4 - 5",
-                GoodsCode = 1,
+                GoodsCode = _dataContext.Goodses.FirstOrDefault().GoodsCode,
                 Price = 1000
             };
             
@@ -77,11 +78,11 @@ namespace Store.Specs.GoodsOutputs
         [Then("باید خروج کالای 'شیر' به تعداد '2 عدد' قیمت '2000' به شماره' 12' وجود داشته باشد")]
         private void Then()
         {
-            var expect = _dataContext.GoodsOutputs.OrderByDescending(_ => _.Date).FirstOrDefault();
-            expect.Number.Should().Be(12);
+            var expect = _dataContext.GoodsOutputs.FirstOrDefault();
+            expect.Number.Should().Be(_dataContext.GoodsOutputs.FirstOrDefault().Number);
             expect.Date.Should().Be(new DateTime(2022, 4, 5, 0, 0, 0, 0));
             expect.Price.Should().Be(1000);
-            expect.GoodsCode.Should().Be(1);
+            expect.GoodsCode.Should().Be(_dataContext.Goodses.FirstOrDefault().GoodsCode);
             expect.Count.Should().Be(2);
         }
         [Fact]

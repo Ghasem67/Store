@@ -9,7 +9,7 @@ using Xunit;
 namespace Store.Specs.Infrastructure
 {
     [Collection(nameof(ConfigurationFixture))]
-    public class EFDataContextDatabaseFixture
+    public class EFDataContextDatabaseFixture :DatabaseFixture
     {
         readonly ConfigurationFixture _configuration;
 

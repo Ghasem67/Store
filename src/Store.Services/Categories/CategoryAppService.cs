@@ -26,7 +26,7 @@ namespace Store.Services.Categories
             var OneGoods = _categoryRepository.GetByTitle(addCategoryDTO.Title);
             if (OneGoods != null)
             {
-                throw new DuplicateValueException();
+                throw new DuplicateNameException();
             }
             Category category = new()
             {
@@ -38,14 +38,24 @@ namespace Store.Services.Categories
 
         public void Delete(int id)
         {
+
             var category = CheckIsNull(id);
+            if (category.Goodses.Count()>0)
+            {
+                throw new CategoryHasChildrenException();
+            }
             _categoryRepository.Delete(category);
             _unitOfWork.Commit();
         }
 
         public HashSet<ShowCategoryDTO> GetAll()
         {
-          return  _categoryRepository.GetAll();
+            var category = _categoryRepository.GetAll();
+            if (category.Count()==0)
+            {
+                throw new ThereIsnoInformationToDisplay();
+            }
+            return category;
         }
 
         public ShowCategoryDTO GetById(int id)
@@ -53,9 +63,10 @@ namespace Store.Services.Categories
             return _categoryRepository.GetOne(id);
         }
 
-        public void Update(UpdateCategoryDTO updateCategoryDTO,int id)
+        public void Update(UpdateCategoryDTO updateCategoryDTO, int id)
         {
             var category = CheckIsNull(id);
+            CheckingDuplicateName(updateCategoryDTO.Title);
             category.Title = updateCategoryDTO.Title;
             _unitOfWork.Commit();
         }
@@ -67,6 +78,14 @@ namespace Store.Services.Categories
                 throw new CategoryNotFoundException();
             }
             return category;
+        }
+        private void CheckingDuplicateName(string GoodsName)
+        {
+            var goods = _categoryRepository.GetByTitle(GoodsName);
+            if (goods != null)
+            {
+                throw new DuplicateNameException();
+            }
         }
     }
 }

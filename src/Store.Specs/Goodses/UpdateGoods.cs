@@ -78,7 +78,7 @@ namespace Store.Specs.Goodses
             _sut.Update(updateGoodsDTO, _context.Goodses.FirstOrDefault().GoodsCode);
         }
         [Then("باید کالایی 'ماست' در دسته بندی لبنیات وجود داشته باشد ")]
-        public void then()
+        public void Then()
         {
            var expect= _context.Goodses.FirstOrDefault();
             expect.Name.Should().Be("ماست");
@@ -88,7 +88,7 @@ namespace Store.Specs.Goodses
         {
             Given();
             When();
-            then();
+            Then();
         }
         [Given("محصول’شیر’ در دسته بندی لبنیات وجود دارد")]
         private void DuplicateGiven()
@@ -117,7 +117,7 @@ namespace Store.Specs.Goodses
             {
                 CategoryId = category.Id,
                 Cost = 1000,
-                GoodsCode = 0987,
+                GoodsCode = 0988,
                 Inventory = 10,
                 MaxInventory = 100,
                 MinInventory = 10,

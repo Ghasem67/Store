@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Store.Services.Goodses.Exceptions
+namespace Store.Services.Categories.Exceptions
 {
-    public class CategoryHasChildrenException:Exception
+    public class DuplicateNameException :Exception
     {
     }
 }

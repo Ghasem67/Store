@@ -27,7 +27,7 @@ namespace Store.Specs.GoodsInputs
     {
         private readonly EFDataContext _context;
         UnitOfWork _unitOfWork ;
-        Categoryrepository goodsInputRepository ;
+        GoodsInputRepository goodsInputRepository ;
         GoodsInputService _sut ;
         private List<GoodsInput> GoodsInputList ;
         private HashSet<ShowGoodsInputDTO> GoodsInputsexpect;
@@ -81,7 +81,7 @@ namespace Store.Specs.GoodsInputs
         public void When()
         {
             UnitOfWork _unitOfWork = new EFUnitOfWork(_context);
-            Categoryrepository goodsInputRepository = new EFGoodsInputRepository(_context);
+            GoodsInputRepository goodsInputRepository = new EFGoodsInputRepository(_context);
             var _sut = new GoodsInputAppService(_unitOfWork, goodsInputRepository);
             GoodsInputsexpect = _sut.GetAll();
         }

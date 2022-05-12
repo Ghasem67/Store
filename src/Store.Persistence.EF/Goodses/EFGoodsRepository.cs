@@ -46,6 +46,10 @@ namespace Store.Persistence.EF.Goodses
         public Goods GetbyId(int goodsCode)
         {
             return _context.Goodses.FirstOrDefault(_ => _.GoodsCode.Equals(goodsCode));
+        } 
+        public Goods GetByName(string goodsName)
+        {
+            return _context.Goodses.FirstOrDefault(_ => _.Name.Equals(goodsName));
         }
 
         public ShowgoodsDTO GetOne(int GoodsCode)

@@ -77,7 +77,7 @@ namespace Store.Specs.Categories
         [Given("دسته بندی با عنوان 'لبنیات' وجود دارد")]
         private void DuplicateGiven()
         {
-          Category  category = new Category()
+            Category category = new Category()
             {
                 Title = "لبنیات"
             };
@@ -99,7 +99,7 @@ namespace Store.Specs.Categories
             {
                 Title = "خشکبار"
             };
-          expect=()=>  _sut.Update(_dto, _category.Id);
+            expect = () => _sut.Update(_dto, _category.Id);
         }
         [Then("تنها یک دسته بندی با  عنوان 'خشکبار' باید وجود داشته باشد ")]
         private void DuplicateThen()
@@ -109,13 +109,14 @@ namespace Store.Specs.Categories
         [And("خطا با عنوان 'دسته بندی تکراری است' نمایش داده شود")]
         private void DuplicateAndThen()
         {
-            expect.Should().ThrowExactly<DuplicateValueException>();
+            expect.Should().ThrowExactly<DuplicateNameException>();
         }
         [Fact]
         private void DuplicateRun()
         {
             Runner.RunScenario(
                 _ => DuplicateGiven()
+               , _ => DuplicateAnd()
                 , _ => DuplicateWhen()
                 , _ => DuplicateThen()
                 , _ => DuplicateAndThen());

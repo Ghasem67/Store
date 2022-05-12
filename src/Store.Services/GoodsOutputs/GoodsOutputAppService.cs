@@ -50,7 +50,12 @@ namespace Store.Services.GoodsOutputs
 
         public HashSet<ShowGoodsOutputDTO> GetAll()
         {
-          return  _repository.GetAll();
+            var GetList= _repository.GetAll();
+            if (GetList.Count()==0)
+            {
+                throw new ThereIsnotInformationToDisplay();
+            }
+            return GetList;
         }
 
         public ShowGoodsOutputDTO GetById(int number)

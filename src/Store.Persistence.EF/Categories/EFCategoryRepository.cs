@@ -38,6 +38,8 @@ namespace Store.Persistence.EF.Categories
             return _context.FirstOrDefault(x=>x.Id.Equals(id));
         }
 
+      
+
         public Category GetByTitle(string title)
         {
             return _context.FirstOrDefault(_ => _.Title.Equals(title));

@@ -8,6 +8,10 @@ namespace Store.Entities
 {
     public class Category:Entity
     {
+        public Category()
+        {
+            Goodses = new HashSet<Goods>();
+        }
         public string Title { get; set; }
         public HashSet<Goods> Goodses { get; set; }
   

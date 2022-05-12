@@ -2,7 +2,7 @@
 {
     public class UpdateGoodsInputDTO
     {
-        public int Number { get; set; }
+       public int Number { get; set; }
         public string Date { get; set; }
         public int GoodsCode { get; set; }
         public int Price { get; set; }

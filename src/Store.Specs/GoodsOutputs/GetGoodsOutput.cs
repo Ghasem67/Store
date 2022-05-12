@@ -6,6 +6,7 @@ using Store.Persistence.EF;
 using Store.Persistence.EF.GoodsOutputs;
 using Store.Services.GoodsOutputs;
 using Store.Services.GoodsOutputs.Contracts;
+using Store.Services.GoodsOutputs.Exceptions;
 using Store.Specs.Infrastructure;
 using System;
 using System.Collections.Generic;

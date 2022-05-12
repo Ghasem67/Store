@@ -27,10 +27,9 @@ namespace Store.Specs.GoodsInputs
     {
         private readonly EFDataContext _dataContext;
         UnitOfWork _unitOfWork;
-        Categoryrepository goodsInputRepository;
+        GoodsInputRepository goodsInputRepository;
         GoodsInputService _sut;
-        private Goods dto;
-        Action expect;
+        GoodsInput goodsInput;
         public UpdateGoodsInputdto(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();
@@ -58,36 +57,36 @@ namespace Store.Specs.GoodsInputs
                 Name = "شیر",
             };
             _dataContext.Manipulate(_ => _.Goodses.Add(dto));
-            GoodsInput goodsInput = new GoodsInput
+             goodsInput = new GoodsInput
             {
-                Number = 14,
-                Count = 2,
+                Number = 100,
+                Count = 1,
                 Date = new DateTime(2022, 4, 5, 0, 0, 0, 0),
                 GoodsCode = 20,
                 Price = 1000
             };
             _dataContext.Manipulate(_ => _.GoodsInputs.Add(goodsInput));
         }
-        [When("زمانی که  '14' به '16' تغییر می کند")]
+        [When("زمانی که قیمت را از  '1000' به '2000' و تعداد را به 2 تقییر دهیم تغییر می کند")]
         private void When()
         {
             UpdateGoodsInputDTO updateGoodsInput = new UpdateGoodsInputDTO
             {
-                Number = 16,
                 Count = 2,
-                Date = "2022, 4, 5, 0, 0, 0, 0",
-                GoodsCode = 1,
-                Price = 1000
+                Date =new DateTime(2022, 4, 5, 0, 0, 0, 0).ToShortDateString(),
+                GoodsCode = 20,
+                Price = 2000
             };
 
 
-            _sut.Update(updateGoodsInput, updateGoodsInput.GoodsCode);
+             _sut.Update(updateGoodsInput, goodsInput.Number);
         }
-        [Then("ورود کالا  با شماره '14' باید وجود داشته باشد ")]
+        [Then("ورود کالا  با تعداد 2 و قیمت 2000 باید وجود داشته باشد ")]
         private void Then()
         {
-            var expect = _dataContext.GoodsInputs.OrderByDescending(x => x.Date).FirstOrDefault(_ => _.Number.Equals(14));
-            expect.Number.Should().Be(14);
+            var expect = _dataContext.GoodsInputs.FirstOrDefault(_=>_.Number.Equals(100));
+            expect.Count.Should().Be(2);
+            expect.Price.Should().Be(2000);
 
         }
         [Fact]
@@ -97,79 +96,6 @@ namespace Store.Specs.GoodsInputs
             When();
             Then();
         }
-        [Given("ورود کالا 'شیر' به تعداد '2 عدد' قیمت '2000' به شماره' 20' وجود دارد")]
-        private void DuplicateGiven()
-        {
-            var _category = new Category
-            {
-                Title = "لبنیات"
-            };
-
-            _dataContext.Manipulate(_ => _.Categories.Add(_category));
-            dto = new Goods()
-            {
-                CategoryId = _dataContext.Categories.FirstOrDefault().Id,
-                Cost = 1000,
-                GoodsCode = 20,
-                MaxInventory = 100,
-                Inventory = 0,
-                MinInventory = 10,
-                Name = "شیر",
-            };
-            _dataContext.Manipulate(_ => _.Goodses.Add(dto));
-            GoodsInput goodsInput = new GoodsInput
-            {
-                Number = 20,
-                Count = 2,
-                Date = new DateTime(2022, 4, 5, 0, 0, 0, 0),
-                GoodsCode = 20,
-                Price = 1000
-            };
-            _dataContext.Manipulate(_ => _.GoodsInputs.Add(goodsInput));
-
-        }
-        [And("ورود کالا با شماره '14' وجود دارد")]
-        private void DuplicateAnd()
-        {
-            GoodsInput goodsInput = new GoodsInput
-            {
-                Number = 14,
-                Count = 2,
-                Date = new DateTime(2022, 4, 5, 0, 0, 0, 0),
-                GoodsCode = dto.GoodsCode,
-                Price = 1000
-            };
-            _dataContext.Manipulate(_ => _.GoodsInputs.Add(goodsInput));
-        }
-        [When("زمانی که  '20' به '14' تغییر می کند")]
-        private void DuplicateWhen()
-        {
-            UpdateGoodsInputDTO updateGoodsInput = new UpdateGoodsInputDTO
-            {
-                Number = 14,
-                Count = 2,
-                Date = "2022, 4, 5, 0, 0, 0, 0",
-                GoodsCode = dto.GoodsCode,
-                Price = 1000
-            };
-
-
-            expect=()=> _sut.Update(updateGoodsInput, updateGoodsInput.GoodsCode);
-        }
-        [Then("خطا با عنوان 'شماره فاکتور تکراری است' باید رخ دهد")]
-        private void DuplicateThen()
-        {
-            expect.Should().ThrowExactly<DuplicateFactorNumberException>();
-        }
-
-        public void DuplicateRun()
-        {
-            Runner.RunScenario(
-                _=>DuplicateGiven(),
-                _=> DuplicateAnd(),
-                _=>DuplicateWhen(),
-                _=>DuplicateThen()
-                );
-        }
+        
     }
 }

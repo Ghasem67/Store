@@ -20,7 +20,7 @@ namespace Store.Services.Test.Unit.GoodsInputs
     {
         private readonly EFDataContext _eFDataContext;
         private readonly UnitOfWork _unitOfWork;
-        private readonly Categoryrepository _goodsInputRepository;
+        private readonly GoodsInputRepository _goodsInputRepository;
         private readonly GoodsInputService _Sut;
         public GoodsInputServiceTests()
         {
@@ -92,13 +92,11 @@ namespace Store.Services.Test.Unit.GoodsInputs
             {
                 Count = 5,
                 Date = new DateTime(2022, 2, 3).ToShortDateString(),
-                Number = 12,
                 Price = 2000,
                 GoodsCode = goodsInput.GoodsCode,
             };
             _Sut.Update(updateGoodsInputDTO, goodsInput.Number);
             var expect = _eFDataContext.GoodsInputs.FirstOrDefault(_ => _.GoodsCode == updateGoodsInputDTO.GoodsCode);
-            expect.Number.Should().Be(updateGoodsInputDTO.Number);
             expect.Date.ToShortDateString().Should().Be(updateGoodsInputDTO.Date);
             expect.Count.Should().Be(updateGoodsInputDTO.Count);
             expect.GoodsCode.Should().Be(updateGoodsInputDTO.GoodsCode);
@@ -222,7 +220,6 @@ namespace Store.Services.Test.Unit.GoodsInputs
             {
                 Count = 1,
                 Date = new DateTime(2022, 2, 2,0,0,0,0).ToShortDateString(),
-                Number = 12,
                 Price = 1000,
                 GoodsCode = goods.GoodsCode,
             };

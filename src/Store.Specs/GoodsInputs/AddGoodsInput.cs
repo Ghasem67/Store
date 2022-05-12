@@ -27,7 +27,7 @@ namespace Store.Specs.GoodsInputs
     {
         private readonly EFDataContext _dataContext;
         UnitOfWork _unitOfWork;
-        Categoryrepository goodsInputRepository;
+        GoodsInputRepository goodsInputRepository;
         GoodsInputService _sut;
         Action expect;
         public AddGoodsInput(ConfigurationFixture configuration) : base(configuration)
@@ -76,11 +76,11 @@ namespace Store.Specs.GoodsInputs
         [Then("باید ورود کالای 'شیر' به تعداد '2 عدد' قیمت '2000' به شماره' 12' وجود داشته باشد")]
         private void Then()
         {
-            var expect = _dataContext.GoodsInputs.OrderByDescending(_ => _.Date).FirstOrDefault();
-            expect.Number.Should().Be(12);
+            var expect = _dataContext.GoodsInputs.FirstOrDefault();
+            expect.Number.Should().Be(14);
             expect.Date.Should().Be(new DateTime(2022, 4, 5, 0, 0, 0, 0));
             expect.Price.Should().Be(1000);
-            expect.GoodsCode.Should().Be(1);
+            expect.GoodsCode.Should().Be(12);
             expect.Count.Should().Be(2);
         }
         [Fact]

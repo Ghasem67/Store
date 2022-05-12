@@ -28,6 +28,7 @@ namespace Store.Services.Goodses
             {
                 throw new DuplicateGoodsCodeException();
             }
+            CheckingDuplicateName(addGoodsDTO.Name);
             Goods goods = new Goods()
             {
                 CategoryId = addGoodsDTO.CategoryId,
@@ -45,13 +46,22 @@ namespace Store.Services.Goodses
         public void Delete(int GoodsCode)
         {
             var goods = CheckingNull(GoodsCode);
+            if (goods.GoodsInputs.Count>0||goods.GoodsOutputs.Count()>0)
+            {
+                throw new GoodsHasChildrenException();
+            }
             _goodsRepository.Delete(goods);
             _unitOfWork.Commit();
         }
 
         public HashSet<ShowgoodsDTO> GetAll()
         {
-            return _goodsRepository.GetAll();
+            var goods = _goodsRepository.GetAll();
+            if (goods.Count()==0)
+            {
+                throw new ThereIsnotInformationToDisplay();
+            }
+            return goods;
         }
 
         public ShowgoodsDTO GetbyId(int id)
@@ -61,6 +71,7 @@ namespace Store.Services.Goodses
 
         public void Update(UpdateGoodsDTO updateGoodsDTO, int GoodsCode)
         {
+           CheckingDuplicateName(updateGoodsDTO.Name);
             var goods = CheckingNull(GoodsCode);
             goods.Cost = updateGoodsDTO.Cost;
             goods.Name = updateGoodsDTO.Name;
@@ -79,6 +90,14 @@ namespace Store.Services.Goodses
                 throw new GoodsNotFoundException();
             }
             return goods;
+        }
+        private void CheckingDuplicateName(string GoodsName)
+        {
+            var goods = _goodsRepository.GetByName(GoodsName);
+            if (goods != null)
+            {
+                throw new DuplicateNameException();
+            }
         }
     }
 }

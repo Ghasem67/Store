@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Store.Persistence.EF.GoodsInputs
 {
-    public class EFGoodsInputRepository : Categoryrepository
+    public class EFGoodsInputRepository : GoodsInputRepository
     {
          private readonly  DbSet<GoodsInput> _goodsInput;
 

@@ -70,25 +70,25 @@ namespace Store.Specs.GoodsOutputs
             };
             _context.Manipulate(_ => _.GoodsOutputs.Add(goodsOutput));
         }
-        [When("زمانی که  '14' به '18' تغییر می کند")]
+        [When("زمانی که تاریخ  '5/ 4/ 2022' به '5/ 5/ 2022' تغییر می کند")]
         private void When()
         {
             UpdateGoodsOutputDTO updateGoodsOutput = new UpdateGoodsOutputDTO
             {
                 Number = 14,
                 Count = 2,
-                Date = "2022, 4, 5, 0, 0, 0, 0",
-                GoodsCode = 54,
+                 Date= new DateTime( 2022, 5, 5,0,0,0,0).ToShortDateString(),
+                GoodsCode = _context.Goodses.FirstOrDefault().GoodsCode,
                 Price = 1000
             };
            
             _sut.Update(updateGoodsOutput, _context.GoodsOutputs.FirstOrDefault().Number);
         }
-        [Then("خروجی کالا  با شماره '14' باید وجود داشته باشد ")]
+        [Then("خروجی کالا  با شماره '18' باید وجود داشته باشد ")]
         private void Then()
         {
             var expect = _context.GoodsOutputs.FirstOrDefault(_ => _.Number.Equals(14));
-            expect.Number.Should().Be(14);
+            expect.Date.Should().Be(new DateTime(2022, 5, 5, 0, 0, 0, 0));
 
         }
         [Fact]

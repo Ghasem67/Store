@@ -137,6 +137,7 @@ namespace Store.Specs.Goodses
         {
             Runner.RunScenario(
                 _ => HaveChildGiven()
+               ,_=> HaveChildAndGiven()
                 , _ => HaveChildWhen()
                 , _ => HaveChildThen()
                 , _ => HaveChildAndThen());

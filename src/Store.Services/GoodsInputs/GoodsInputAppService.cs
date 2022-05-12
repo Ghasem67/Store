@@ -12,11 +12,11 @@ namespace Store.Services.GoodsInputs
 {
     public class GoodsInputAppService : GoodsInputService
     {
-        private readonly Categoryrepository _goodsInputRepository;
+        private readonly GoodsInputRepository _goodsInputRepository;
         private readonly UnitOfWork _unitOfWork;
 
         public GoodsInputAppService(UnitOfWork unitOfWork,
-            Categoryrepository goodsRepository)
+            GoodsInputRepository goodsRepository)
         {
             _unitOfWork = unitOfWork;
             _goodsInputRepository = goodsRepository;
@@ -47,7 +47,12 @@ namespace Store.Services.GoodsInputs
 
         public HashSet<ShowGoodsInputDTO> GetAll()
         {
-           return _goodsInputRepository.GetAll();
+            var goodsinput= _goodsInputRepository.GetAll();
+            if (goodsinput.Count==0)
+            {
+                throw new ThereIsnotInformationToDisplay();
+            }
+            return goodsinput;
         }
 
         public ShowGoodsInputDTO GetById(int numder)
@@ -55,12 +60,12 @@ namespace Store.Services.GoodsInputs
             return _goodsInputRepository.GetOneGoodsInput(numder);
         }
 
-        public void Update(UpdateGoodsInputDTO updateGoodsInputDTO,int id)
+        public void Update(UpdateGoodsInputDTO updateGoodsInputDTO,int Number)
         {
-         var goodsInput=  CheckIsNull(id);
-
-            goodsInput.Number = updateGoodsInputDTO.Number;
-            goodsInput.GoodsCode = updateGoodsInputDTO.GoodsCode;
+         var goodsInput=  CheckIsNull(Number);
+            CheckDuplicate(updateGoodsInputDTO.Number);
+            //goodsInput.Number = updateGoodsInputDTO.Number;
+           goodsInput.GoodsCode = updateGoodsInputDTO.GoodsCode;
             goodsInput.Price = updateGoodsInputDTO.Price;
             goodsInput.Count = updateGoodsInputDTO.Count;
             goodsInput.Date = IsDateTimeFormat(updateGoodsInputDTO.Date);
@@ -85,14 +90,13 @@ namespace Store.Services.GoodsInputs
             }
             return date;
         }
-        private GoodsInput  CheckDuplicate(int number)
+        private void  CheckDuplicate(int number)
         {
             var goodsInput = _goodsInputRepository.GetById(number);
             if (goodsInput != null)
             {
                 throw new DuplicateFactorNumberException();
             }
-            return goodsInput;
         }
     }
 }

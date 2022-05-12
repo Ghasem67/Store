@@ -15,6 +15,7 @@ using Xunit;
 using Store.Infrastracture.Application;
 using Store.Services.Categories.Contracts;
 using Store.Services.Goodses.Exceptions;
+using Store.Services.Categories.Exceptions;
 
 namespace Store.Specs.Categories
 {

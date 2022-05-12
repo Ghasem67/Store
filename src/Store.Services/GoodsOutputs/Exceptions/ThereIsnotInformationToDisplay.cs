@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Store.Services.Categories.Exceptions
+namespace Store.Services.GoodsOutputs.Exceptions
 {
-    public class DuplicateValueException :Exception
+    public class ThereIsnotInformationToDisplay:Exception
     {
     }
 }

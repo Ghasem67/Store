@@ -88,31 +88,6 @@ namespace Store.Specs.Goodses
             When();
             Then();
         }
-        [Given("کالایی در سیستم وجود ندارد")]
-        private void NotHaveGiven()
-        {
-
-        }
-
-        [When("درخواست نمایش اطلاعات ارسال می شود")]
-        private void NotHaveWhen()
-        {
-
-            Expect = () => _sut.GetAll();
-        }
-        [Then(" خطایی با عنوان 'اطلاعاتی جهت نمایش وجود ندارد' در سیستم رخ می دهد")]
-        private void NotHaveThen()
-        {
-            Expect.Should().ThrowExactly<ThereIsnotInformationToDisplay>();
-        }
-        [Fact]
-        private void NotHaveRun()
-        {
-            Runner.RunScenario(
-            _ => NotHaveGiven(),
-            _ => NotHaveWhen(),
-            _ => NotHaveThen()
-            );
-        }
+        
     }
 }

@@ -81,66 +81,6 @@ namespace Store.Specs.Goodses
             When();
             Then();
         }
-        [Given(" محصولی با نام 'شیر' در دسته بندی 'لبنیات'  وجود دارد")]
-        private void HaveChildGiven()
-        {
-          Category  category = new Category
-            {
-                Title = "لبنیات"
-            };
-            _context.Manipulate(_ => _.Categories.Add(category));
-            goods = new Goods
-            {
-                CategoryId = category.Id,
-                Cost = 1000,
-                GoodsCode = 0987,
-                Inventory = 10,
-                MaxInventory = 100,
-                MinInventory = 10,
-                Name = "شیر"
-            };
-            _context.Manipulate(_ => _.Goodses.Add(goods));
-        }
-        [And("فروخته شده")]
-        private void HaveChildAndGiven()
-        {
-            GoodsOutput output = new GoodsOutput()
-            {
-                GoodsCode = goods.GoodsCode,
-                Count = 1,
-                Date = DateTime.Now.Date,
-                Number = 123,
-                Price = 1000
-            };
-            _context.Manipulate(_ => _.GoodsOutputs.Add(output));
-        }
-            [When("درخواست حذف محصول 'شیر' از دسته بندی 'لبنیات' ارسال می شود")]
-        private void HaveChildWhen()
-        {
-
-            expect = () => _sut.Delete(goods.GoodsCode);
-        }
-        [Then("محصول 'شیر' حذف نمی شود")]
-        private void HaveChildThen()
-        {
-            var expect = _context.Goodses.Where(x => x.GoodsCode.Equals(goods.GoodsCode)).ToList();
-            expect.Should().HaveCount(1);
-
-        }
-        [And("خطا با عنوان 'دسته بندی  دارای فرزند می باشد' رخ می دهد")]
-        private void HaveChildAndThen()
-        {
-            expect.Should().ThrowExactly<GoodsHasChildrenException>();
-        }
-        [Fact]
-        private void DuplicateRun()
-        {
-            Runner.RunScenario(
-                _ => HaveChildGiven()
-               ,_=> HaveChildAndGiven()
-                , _ => HaveChildWhen()
-                , _ => HaveChildThen()
-                , _ => HaveChildAndThen());
-        }
+        
     }
 }

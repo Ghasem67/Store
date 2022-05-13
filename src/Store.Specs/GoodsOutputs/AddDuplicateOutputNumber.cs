@@ -20,31 +20,25 @@ namespace Store.Specs.GoodsOutputs
 {
     [Scenario("تعریف خروجی کالا")]
     [Feature("",
-        AsA = "فروشنده",
-        IWantTo = "مدیریت   کالا داشته باشم",
-        InOrderTo = "تا بتوانیم خروجی  کالا ثبت کنیم")]
-    public class AddGoodsoutput : EFDataContextDatabaseFixture
+          AsA = "فروشنده",
+          IWantTo = "مدیریت   کالا داشته باشم",
+          InOrderTo = "تا بتوانیم خروجی  کالا ثبت کنیم")]
+    public class AddDuplicateOutputNumber : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _dataContext;
-        UnitOfWork _unitOfWork ;
+        UnitOfWork _unitOfWork;
         EFGoodsOutPutRepository goodsOutputRepository;
         GoodsOutputService _sut;
         Action expect;
-        public AddGoodsoutput(ConfigurationFixture configuration) : base(configuration)
+        public AddDuplicateOutputNumber(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();
             _unitOfWork = new EFUnitOfWork(_dataContext);
             goodsOutputRepository = new EFGoodsOutPutRepository(_dataContext);
             _sut = new GoodsOutputAppService(_unitOfWork, goodsOutputRepository);
-            
         }
-        [Given("هیچ خریدی  وجود ندارد")]
+        [Given("خروج کالا 'شیر' به تعداد '2 عدد' قیمت '2000' به شماره' 12' ثبت   می شود")]
         private void Given()
-        {
-
-        }
-        [When("خروج کالا 'شیر' به تعداد '2 عدد' قیمت '2000' به شماره' 14' ثبت   می شود")]
-        private void When()
         {
             var _category = new Category
             {
@@ -56,43 +50,51 @@ namespace Store.Specs.GoodsOutputs
             {
                 CategoryId = _dataContext.Categories.FirstOrDefault().Id,
                 Cost = 1000,
-                GoodsCode = 100,
+                GoodsCode = 12,
                 MaxInventory = 100,
                 Inventory = 0,
                 MinInventory = 10,
                 Name = "شیر",
-                Category= _dataContext.Categories.FirstOrDefault()
             };
             _dataContext.Manipulate(_ => _.Goodses.Add(dto));
-            AddgoodsOutputDTO goodsoutput = new AddgoodsOutputDTO
+            GoodsOutput goodsOutput = new GoodsOutput
             {
-                Number = 28,
+                Number = 12,
                 Count = 2,
-                Date = "2022 - 4 - 5",
-                GoodsCode = _dataContext.Goodses.FirstOrDefault().GoodsCode,
+                Date = new DateTime(2022, 4, 5, 0, 0, 0, 0),
+                GoodsCode = 12,
                 Price = 1000
             };
-            
-            _sut.Add(goodsoutput);
-            }
-        [Then("باید خروج کالای 'شیر' به تعداد '2 عدد' قیمت '2000' به شماره' 12' وجود داشته باشد")]
+
+            _dataContext.Manipulate(_ => _.GoodsOutputs.Add(goodsOutput));
+        }
+        [When("خروج کالا با شماره'12' ثبت می شود")]
+        private void When()
+        {
+            AddgoodsOutputDTO goodsOutput = new AddgoodsOutputDTO
+            {
+                Number = 12,
+                Count = 2,
+                Date = "2022 - 4 - 5",
+                GoodsCode = 12,
+                Price = 1000
+            };
+
+            expect = () => _sut.Add(goodsOutput);
+        }
+        [Then("خطایی با عنوان ‘خروجی کالا با شماره 12 وجود دارد’ رخ می دهد")]
         private void Then()
         {
-            var expect = _dataContext.GoodsOutputs.FirstOrDefault();
-            expect.Number.Should().Be(_dataContext.GoodsOutputs.FirstOrDefault().Number);
-            expect.Date.Should().Be(new DateTime(2022, 4, 5, 0, 0, 0, 0));
-            expect.Price.Should().Be(1000);
-            expect.GoodsCode.Should().Be(_dataContext.Goodses.FirstOrDefault().GoodsCode);
-            expect.Count.Should().Be(2);
+            expect.Should().ThrowExactly<DuplicateFactorNumberException>();
         }
         [Fact]
-        private void Run()
+        private void DuplicateRun()
         {
-           Given();
-           When();
-            Then();
+            Runner.RunScenario(
+                _ => Given(),
+                _ => When(),
+                _ => Then()
+                );
         }
-
-        
     }
 }

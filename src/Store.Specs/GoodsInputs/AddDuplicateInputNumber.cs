@@ -20,30 +20,25 @@ namespace Store.Specs.GoodsInputs
 {
     [Scenario("تعریف ورودی کالا")]
     [Feature("",
-        AsA = "فروشنده",
-        IWantTo = "مدیریت   کالا داشته باشم",
-        InOrderTo = "تا بتوانیم ورودی  کالا ثبت کنیم")]
-    public class AddGoodsInput : EFDataContextDatabaseFixture
+          AsA = "فروشنده",
+          IWantTo = "مدیریت   کالا داشته باشم",
+          InOrderTo = "تا بتوانیم ورودی  کالا ثبت کنیم")]
+    public class AddDuplicateInputNumber : EFDataContextDatabaseFixture
     {
         private readonly EFDataContext _dataContext;
         UnitOfWork _unitOfWork;
         GoodsInputRepository goodsInputRepository;
         GoodsInputService _sut;
         Action expect;
-        public AddGoodsInput(ConfigurationFixture configuration) : base(configuration)
+        public AddDuplicateInputNumber(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();
             _unitOfWork = new EFUnitOfWork(_dataContext);
             goodsInputRepository = new EFGoodsInputRepository(_dataContext);
             _sut = new GoodsInputAppService(_unitOfWork, goodsInputRepository);
         }
-        [Given("هیچ خریدی  وجود ندارد")]
+        [Given("ورود کالا 'شیر' به تعداد '2 عدد' قیمت '2000' به شماره' 12' ثبت   می شود")]
         private void Given()
-        {
-
-        }
-        [When("ورود کالا 'شیر' به تعداد '2 عدد' قیمت '2000' به شماره' 14' ثبت   می شود")]
-        private void When()
         {
             var _category = new Category
             {
@@ -62,34 +57,44 @@ namespace Store.Specs.GoodsInputs
                 Name = "شیر",
             };
             _dataContext.Manipulate(_ => _.Goodses.Add(dto));
+            GoodsInput goodsInput = new GoodsInput
+            {
+                Number = 12,
+                Count = 2,
+                Date = new DateTime(2022, 4, 5, 0, 0, 0, 0),
+                GoodsCode = 12,
+                Price = 1000
+            };
+
+            _dataContext.Manipulate(_ => _.GoodsInputs.Add(goodsInput));
+        }
+        [When("ورود کالا با شماره'12' ثبت می شود")]
+        private void When()
+        {
             AddGoodsInputDTO goodsInput = new AddGoodsInputDTO
             {
-                Number = 14,
+                Number = 12,
                 Count = 2,
                 Date = "2022 - 4 - 5",
                 GoodsCode = 12,
                 Price = 1000
             };
 
-            _sut.Add(goodsInput);
+            expect = () => _sut.Add(goodsInput);
         }
-        [Then("باید ورود کالای 'شیر' به تعداد '2 عدد' قیمت '2000' به شماره' 12' وجود داشته باشد")]
+        [Then("خطایی با عنوان ‘ورودی کالا با عنوان 12 وجود دارد’ رخ می دهد")]
         private void Then()
         {
-            var expect = _dataContext.GoodsInputs.FirstOrDefault();
-            expect.Number.Should().Be(14);
-            expect.Date.Should().Be(new DateTime(2022, 4, 5, 0, 0, 0, 0));
-            expect.Price.Should().Be(1000);
-            expect.GoodsCode.Should().Be(12);
-            expect.Count.Should().Be(2);
+            expect.Should().ThrowExactly<DuplicateFactorNumberException>();
         }
         [Fact]
-        private void Run()
+        private void DuplicateRun()
         {
-            Given();
-            When();
-            Then();
+            Runner.RunScenario(
+                _ => Given(),
+                _ => When(),
+                _ => Then()
+                );
         }
-     
     }
 }

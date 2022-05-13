@@ -73,7 +73,7 @@ namespace Store.Services.Test.Unit.GoodsOutputs
            
         }
         [Fact]
-        private void Update_updates_goods_Properly()
+        private void Update_updates_goodsoutPut_Properly()
         {
             var goodsOutput = GenerateGoodsOutput();
             UpdateGoodsOutputDTO updategoodsoutputDTO = new UpdateGoodsOutputDTO()
@@ -84,7 +84,7 @@ namespace Store.Services.Test.Unit.GoodsOutputs
                 Price = 2000,
                 GoodsCode = goodsOutput.GoodsCode,
             };
-            _sut.Update(updategoodsoutputDTO, goodsOutput.GoodsCode);
+            _sut.Update(updategoodsoutputDTO, goodsOutput.Number);
             var expect = _context.GoodsOutputs.FirstOrDefault(_ => _.GoodsCode == updategoodsoutputDTO.GoodsCode);
             expect.Number.Should().Be(updategoodsoutputDTO.Number);
             expect.Date.ToShortDateString().Should().Be(updategoodsoutputDTO.Date);
@@ -113,7 +113,7 @@ namespace Store.Services.Test.Unit.GoodsOutputs
         private void Delete_deletes_goodsOutput_properly()
         {
             var goodsOutput = GenerateGoodsOutput();
-            _sut.Delete(goodsOutput.GoodsCode);
+            _sut.Delete(goodsOutput.Number);
             var expect = _context.GoodsOutputs.FirstOrDefault(_ => _.GoodsCode.Equals(goodsOutput.GoodsCode));
             expect.Should().BeNull();
         }

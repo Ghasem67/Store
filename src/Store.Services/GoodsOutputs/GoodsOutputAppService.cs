@@ -68,7 +68,7 @@ namespace Store.Services.GoodsOutputs
             var goodsoutput = CheckIsNull(number);
 
 
-            goodsoutput.Number = updateGoodsOutputDTO.Number;
+            //goodsoutput.Number = updateGoodsOutputDTO.Number;
             goodsoutput.GoodsCode = updateGoodsOutputDTO.GoodsCode;
             goodsoutput.Price = updateGoodsOutputDTO.Price;
             goodsoutput.Count = updateGoodsOutputDTO.Count;

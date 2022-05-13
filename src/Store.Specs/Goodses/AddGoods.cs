@@ -29,8 +29,6 @@ namespace Store.Specs.Goodses
         UnitOfWork unitOfWork;
         GoodsRepository repository;
         GoodsService _sut;
-        Action expect;
-        Category category;
         public AddGoods(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();
@@ -82,61 +80,6 @@ namespace Store.Specs.Goodses
             When();
             Then();
         }
-        [Given("محصولی با عنوان 'شیر' در دسته بندی 'لبنیات' وجود دارد")]
-        private void DuplicateGiven()
-        {
-            category = new Category()
-            {
-                Title = "لبنیات"
-            };
-            _dataContext.Manipulate(_ => _.Categories.Add(category));
-            Goods goods = new Goods()
-            {
-                CategoryId = category.Id,
-                Cost = 100,
-                GoodsCode = 3,
-                Inventory = 15,
-                MaxInventory = 100,
-                MinInventory = 14,
-                Name = "شیر"
-            };
-            _dataContext.Manipulate(_ => _.Goodses.Add(goods));
-        }
-        [When("محصولی با عنوان 'شیر' در دسته بندی 'لبنیات' تعریف می کنم")]
-        private void DuplicateWhen()
-        {
-            AddGoodsDTO addGoodsDTO = new AddGoodsDTO()
-            {
-                CategoryId = category.Id,
-                Cost = 100,
-                GoodsCode = 5,
-                Inventory = 10,
-                MaxInventory = 100,
-                MinInventory = 10,
-                Name = "شیر"
-            };
-            expect=()=>_sut.Add(addGoodsDTO);
-        }
-        [Then("تنها یک محصول  با عنوان 'شیر' باید در دسته بندی 'لبنیات' وجود داشته باشد")]
-        private void DuplicateThen()
-        {
-            _dataContext.Goodses.Where(_ => _.Category.Title.Equals("لبنیات") && _.Name.Equals("شیر"))
-                .Should().HaveCount(1);
-        }
-        [Then("خطا با عنوان 'نام محصول تکراری است' باید رخ دهد")]
-        private void DuplicateAndThen()
-        {
-            expect.Should().ThrowExactly<DuplicateNameException>();
-        }
-        [Fact]
-        private void DuplicateRun()
-        {
-            Runner.RunScenario(
-                _=>DuplicateGiven(),
-                _=>DuplicateWhen(),
-                _=>DuplicateThen(),
-                _=>DuplicateAndThen()
-                );
-        }
+        
     }
 }

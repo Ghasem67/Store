@@ -94,19 +94,19 @@ namespace Store.Services.Test.Unit.Categories
             Action expect = () => _Sut.Delete(categoryId);
             expect.Should().ThrowExactly<CategoryNotFoundException>();
         }
-        //[Fact]
-        //private void Add_adds_throw_IsExistException_when_add_title_Category_is_exist()
-        //{
-        //    var category = CategoryFactory.CreateCategory("khoshkbar");
-        //    _context.Manipulate(_ => _.Categories.Add(category));
-        //    AddCategoryDTO updateCategoryDTO = new AddCategoryDTO()
-        //    {
+        [Fact]
+        private void Add_adds_throw_IsExistException_when_add_title_Category_is_exist()
+        {
+            var category = CategoryFactory.CreateCategory("khoshkbar");
+            _context.Manipulate(_ => _.Categories.Add(category));
+            AddCategoryDTO updateCategoryDTO = new AddCategoryDTO()
+            {
 
-        //        Title = "khoshkbar"
-        //    };
-        //    Action expect = () => _Sut.Add(updateCategoryDTO);
-        //    expect.Should().ThrowExactly<DuplicateValueException>();
-        //}
+                Title = "khoshkbar"
+            };
+            Action expect = () => _Sut.Add(updateCategoryDTO);
+            expect.Should().ThrowExactly<DuplicateNameException>();
+        }
         private static AddCategoryDTO GenerateAddCategoryDto()
         {
             return new AddCategoryDTO

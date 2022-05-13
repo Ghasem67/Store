@@ -29,8 +29,6 @@ namespace Store.Specs.GoodsOutputs
         UnitOfWork _unitOfWork ;
         GoodsOutputRepository goodsOutputRepository ;
         GoodsOutputService _sut ;
-        Action expect;
-        private Goods dto;
         public UpdateGoodsOutput(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();

@@ -33,7 +33,7 @@ namespace Store.Services.Test.Unit.GoodsInputs
         [Fact]
         private void Adds_adds_goodsInput_properly()
         {
-            var goods = GenerateGoodsInput();
+            var goods = generategoods();
             AddGoodsInputDTO addGoodsInputDTO = new AddGoodsInputDTO
             {
                 Count = 1,
@@ -123,7 +123,7 @@ namespace Store.Services.Test.Unit.GoodsInputs
         private void Delete_deletes_goodsInput_properly()
         {
             var goodsInput = GenerateGoodsInput();
-            _Sut.Delete(goodsInput.GoodsCode);
+            _Sut.Delete(goodsInput.Number);
             var expect = _eFDataContext.GoodsInputs.FirstOrDefault(_ => _.GoodsCode.Equals(goodsInput.GoodsCode));
             expect.Should().BeNull();
         }

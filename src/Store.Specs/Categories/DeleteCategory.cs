@@ -71,52 +71,5 @@ namespace Store.Specs.Categories
             When();
             Then();
         }
-        [Given("دسته بندی با عنوان 'لبنیات' در سیستم وجود دارد")]
-        private void HaveChildGiven()
-        {
-            category = new Category
-            {
-                Title = "لبنیات"
-            };
-            _context.Manipulate(_ => _.Categories.Add(category));
-            Goods goods = new Goods
-            {
-                CategoryId = category.Id,
-                Cost =1000,
-                GoodsCode=0987,
-                Inventory=10,
-                MaxInventory=100,
-                MinInventory=10,
-                Name="شیر"
-            };
-            _context.Manipulate(_ => _.Goodses.Add(goods));
-        }
-        [When("درخواست حذف دسته بندی 'لبنیات' ارسال می کنیم")]
-        private void HaveChildWhen()
-        {
-
-          expect=()=>  _sut.Delete(category.Id);
-        }
-        [Then("دسته بندی با عنوان 'لبنیات' حذف نمی شود")]
-        private void HaveChildThen()
-        {
-            var expect = _context.Categories.Where(x => x.Id.Equals(category.Id)).ToList();
-            expect.Should().HaveCount(1);
-
-        }
-        [And("خطا با عنوان 'دسته بندی  دارای فرزند می باشد' رخ می دهد")]
-        private void HaveChildAndThen()
-        {
-            expect.Should().ThrowExactly<CategoryHasChildrenException>();
-        }
-        [Fact]
-        private void DuplicateRun()
-        {
-            Runner.RunScenario(
-                _ => HaveChildGiven()
-                , _ => HaveChildWhen()
-                , _ => HaveChildThen()
-                , _ => HaveChildAndThen());
-        }
     }
 }

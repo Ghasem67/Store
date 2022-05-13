@@ -31,7 +31,7 @@ namespace Store.Specs.GoodsOutputs
        GoodsOutputService _sut;
         private HashSet<ShowGoodsOutputDTO> GoodsOutputHashSet;
         List<GoodsOutput> GoodsOutputList;
-        Action expect;
+       
         public GetGoodsOutput(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();
@@ -110,31 +110,6 @@ namespace Store.Specs.GoodsOutputs
             When();
             Then();
         }
-        [Given("ورود کالایی در سیستم وجود ندارد")]
-        private void NotHaveGiven()
-        {
-
-        }
-
-        [When("درخواست نمایش اطلاعات ارسال می شود")]
-        private void NotHaveWhen()
-        {
-
-            expect = () => _sut.GetAll();
-        }
-        [Then(" خطایی با عنوان 'اطلاعاتی جهت نمایش وجود ندارد' در سیستم رخ می دهد")]
-        private void NotHaveThen()
-        {
-            expect.Should().ThrowExactly<ThereIsnotInformationToDisplay>();
-        }
-        [Fact]
-        private void NotHaveRun()
-        {
-            Runner.RunScenario(
-            _ => NotHaveGiven(),
-            _ => NotHaveWhen(),
-            _ => NotHaveThen()
-            );
-        }
+        
     }
 }

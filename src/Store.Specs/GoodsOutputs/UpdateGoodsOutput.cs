@@ -73,7 +73,6 @@ namespace Store.Specs.GoodsOutputs
         {
             UpdateGoodsOutputDTO updateGoodsOutput = new UpdateGoodsOutputDTO
             {
-                Number = 14,
                 Count = 2,
                  Date= new DateTime( 2022, 5, 5,0,0,0,0).ToShortDateString(),
                 GoodsCode = _context.Goodses.FirstOrDefault().GoodsCode,

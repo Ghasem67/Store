@@ -7,6 +7,9 @@ using Store.Persistence.EF.GoodsOutputs;
 using Store.Services.GoodsOutputs;
 using Store.Services.GoodsOutputs.Contracts;
 using Store.Services.GoodsOutputs.Exceptions;
+using Store.Test.Tools.Categories;
+using Store.Test.Tools.Goodses;
+using Store.Test.Tools.GoodsOutputs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +36,9 @@ namespace Store.Services.Test.Unit.GoodsOutputs
         [Fact]
         private void Adds_adds_goodsoutput_properly()
         {
-            var goods = generategoods();
-            AddgoodsOutputDTO addGoodsOutputDTO = new AddgoodsOutputDTO
+            var goods = Generategoods();
+            AddgoodsOutputDTO addGoodsOutputDTO = GoodsOutputFactory.CreateAddGoodsOutputDTO(goods.GoodsCode, 213);
+                new AddgoodsOutputDTO
             {
                 Count = 1,
                 Date = DateTime.Now.ToShortDateString(),
@@ -50,7 +54,7 @@ namespace Store.Services.Test.Unit.GoodsOutputs
         [Fact]
         private void Adds_adds_goodsoutput_throwException_IsExist()
         {
-            var goods = generategoods();
+            var goods = Generategoods();
             GoodsOutput goodsOutput = new GoodsOutput
             {
                 Count = 1,
@@ -76,17 +80,13 @@ namespace Store.Services.Test.Unit.GoodsOutputs
         private void Update_updates_goodsoutPut_Properly()
         {
             var goodsOutput = GenerateGoodsOutput();
-            UpdateGoodsOutputDTO updategoodsoutputDTO = new UpdateGoodsOutputDTO()
-            {
-                Count = 5,
-                Date = new DateTime(2022, 2, 3).ToShortDateString(),
-                Number = 12,
-                Price = 2000,
-                GoodsCode = goodsOutput.GoodsCode,
-            };
+            UpdateGoodsOutputDTO updategoodsoutputDTO =
+                GoodsOutputFactory.CreateUpdateGoodsOutputDTO(goodsOutput.GoodsCode);
+             
             _sut.Update(updategoodsoutputDTO, goodsOutput.Number);
-            var expect = _context.GoodsOutputs.FirstOrDefault(_ => _.GoodsCode == updategoodsoutputDTO.GoodsCode);
-            expect.Number.Should().Be(updategoodsoutputDTO.Number);
+            var expect = _context.GoodsOutputs.
+                FirstOrDefault(_ => _.Number == goodsOutput.Number);
+            expect.Number.Should().Be(goodsOutput.Number);
             expect.Date.ToShortDateString().Should().Be(updategoodsoutputDTO.Date);
             expect.Count.Should().Be(updategoodsoutputDTO.Count);
             expect.GoodsCode.Should().Be(updategoodsoutputDTO.GoodsCode);
@@ -120,7 +120,7 @@ namespace Store.Services.Test.Unit.GoodsOutputs
         [Fact]
         private void GEtAll_getalls_goodsoutput_properly()
         {
-          var goodsOutputList=  genaratelistgoodsOutput();
+          var goodsOutputList=  GenaratelistgoodsOutput();
            var expect= _sut.GetAll();
             expect.Should().Contain(_ => _.Date == goodsOutputList[0].Date.ToShortDateString());
             expect.Should().Contain(_ => _.Count == goodsOutputList[0].Count);
@@ -150,79 +150,35 @@ namespace Store.Services.Test.Unit.GoodsOutputs
             expect.Date.Should().Be(goodsOutput.Date.ToShortDateString());
            
         }
-        private List<GoodsOutput> genaratelistgoodsOutput()
+        private List<GoodsOutput> GenaratelistgoodsOutput()
         {
-            Category category = new Category()
-            {
-                Title = "لبنیات"
-            };
-            _context.Manipulate(_ => _.Categories.Add(category));
-            Goods goods = new Goods()
-            {
-                CategoryId = category.Id,
-                Cost = 1000,
-                GoodsCode = 27,
-                Inventory = 12,
-                MaxInventory = 100,
-                MinInventory = 10,
-                Name = "شیر",
-            };
-            _context.Manipulate(_ => _.Goodses.Add(goods));
-            List<GoodsOutput> goodsOutputs = new List<GoodsOutput>()
-            {
-                 new GoodsOutput{Count=2,Date=new DateTime(2022-2-4),GoodsCode=goods.GoodsCode,Number=1,Price=1000 },
-                  new GoodsOutput{Count=2,Date=new DateTime(2022-2-3),GoodsCode=goods.GoodsCode,Number=2,Price=2000 },
-                 new GoodsOutput{Count=2,Date=new DateTime(2022-2-3),GoodsCode=goods.GoodsCode,Number=3,Price=3000 }
-            };
+          var goods=  Generategoods();
+            List<GoodsOutput> goodsOutputs = new List<GoodsOutput>();
+            goodsOutputs.Add(GoodsOutputFactory.CreateGoodsOutput(goods.GoodsCode,123));
+            goodsOutputs.Add(GoodsOutputFactory.CreateGoodsOutput(goods.GoodsCode,124));
+            goodsOutputs.Add(GoodsOutputFactory.CreateGoodsOutput(goods.GoodsCode,125));
             _context.Manipulate(_ => _.GoodsOutputs.AddRange(goodsOutputs));
             return goodsOutputs;
         }
-        private Goods generategoods()
+        private Goods Generategoods()
         {
-            Category category = new Category()
-            {
-                Title = "لبنیات"
-            };
+            Category category = CategoryFactory.CreateCategory("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(category));
-            Goods goods = new Goods()
-            {
-                CategoryId = category.Id,
-                Cost = 1000,
-                GoodsCode = 38,
-                Inventory = 12,
-                MaxInventory = 100,
-                MinInventory = 10,
-                Name = "شیر",
-            };
+            Goods goods = GoodsFactory.CreateGoods(97, "شیر", category.Id);
             _context.Manipulate(_ => _.Goodses.Add(goods));
             return goods;
         }
         private GoodsOutput GenerateGoodsOutput()
         {
-            var goods = generategoods();
-            GoodsOutput goodsOutput = new GoodsOutput()
-            {
-                Count = 1,
-                Date = new DateTime(2022, 2, 2,0,0,0,0),
-                Number = 12,
-                Price = 1000,
-                GoodsCode = goods.GoodsCode,
-            };
+            var goods = Generategoods();
+            GoodsOutput goodsOutput = GoodsOutputFactory.CreateGoodsOutput(goods.GoodsCode, 43);
             _context.Manipulate(_ => _.GoodsOutputs.Add(goodsOutput));
             return goodsOutput;
         }
         private UpdateGoodsOutputDTO GenerateUpdateGoodsOutputDto()
         {
-            var goods = generategoods();
-
-            return new UpdateGoodsOutputDTO
-            {
-                Count = 1,
-                Date = new DateTime(2022, 2, 2, 0, 0, 0, 0).ToShortDateString(),
-                Number = 12,
-                Price = 1000,
-                GoodsCode = goods.GoodsCode,
-            };
+            var goods = Generategoods();
+           return  GoodsOutputFactory.CreateUpdateGoodsOutputDTO(goods.GoodsCode);
 
         }
     }

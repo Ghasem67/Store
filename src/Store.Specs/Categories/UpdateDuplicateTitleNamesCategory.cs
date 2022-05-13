@@ -71,7 +71,7 @@ namespace Store.Specs.Categories
             expect.Should().ThrowExactly<DuplicateNameException>();
         }
         [Fact]
-        private void DuplicateRun()
+        private void Run()
         {
             Runner.RunScenario(
                 _ => Given()

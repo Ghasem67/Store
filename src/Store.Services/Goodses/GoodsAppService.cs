@@ -23,63 +23,55 @@ namespace Store.Services.Goodses
 
         public void Add(AddGoodsDTO addGoodsDTO)
         {
-          var OneGoods=  _goodsRepository.GetbyId(addGoodsDTO.GoodsCode);
-            if (OneGoods!=null)
-            {
-                throw new DuplicateGoodsCodeException();
-            }
+            CheckingDuplicateCode(addGoodsDTO.GoodsCode);
             CheckingDuplicateName(addGoodsDTO.Name);
             Goods goods = new Goods()
             {
                 CategoryId = addGoodsDTO.CategoryId,
                 Cost = addGoodsDTO.Cost,
                 GoodsCode = addGoodsDTO.GoodsCode,
-                Inventory=addGoodsDTO.Inventory,
-                MaxInventory=addGoodsDTO.MaxInventory,
-                Name=addGoodsDTO.Name,
-                MinInventory=addGoodsDTO.MinInventory
+                Inventory = addGoodsDTO.Inventory,
+                MaxInventory = addGoodsDTO.MaxInventory,
+                Name = addGoodsDTO.Name,
+                MinInventory = addGoodsDTO.MinInventory
             };
-        _goodsRepository.Add(goods);
+            _goodsRepository.Add(goods);
             _unitOfWork.Commit();
         }
 
         public void Delete(int GoodsCode)
         {
             var goods = CheckingNull(GoodsCode);
-            if (goods.GoodsInputs.Count>0||goods.GoodsOutputs.Count()>0)
-            {
-                throw new GoodsHasChildrenException();
-            }
+            HasChild(goods);
             _goodsRepository.Delete(goods);
             _unitOfWork.Commit();
         }
 
+       
+
         public HashSet<ShowgoodsDTO> GetAll()
         {
             var goods = _goodsRepository.GetAll();
-            if (goods.Count()==0)
-            {
-                throw new ThereIsnotInformationToDisplay();
-            }
+            ListisNull(goods);
             return goods;
         }
 
         public ShowgoodsDTO GetbyId(int id)
         {
-           return _goodsRepository.GetOne(id);
+            return _goodsRepository.GetOne(id);
         }
 
         public void Update(UpdateGoodsDTO updateGoodsDTO, int GoodsCode)
         {
-           CheckingDuplicateName(updateGoodsDTO.Name);
+            CheckingDuplicateName(updateGoodsDTO.Name);
             var goods = CheckingNull(GoodsCode);
             goods.Cost = updateGoodsDTO.Cost;
             goods.Name = updateGoodsDTO.Name;
             goods.Inventory = updateGoodsDTO.Inventory;
             goods.MinInventory = updateGoodsDTO.MinInventory;
-            goods.MaxInventory = updateGoodsDTO.MaxInventory;   
+            goods.MaxInventory = updateGoodsDTO.MaxInventory;
             goods.Inventory = updateGoodsDTO.Inventory;
-            goods.CategoryId= updateGoodsDTO.CategoryId;
+            goods.CategoryId = updateGoodsDTO.CategoryId;
             _unitOfWork.Commit();
         }
         private Goods CheckingNull(int GoodsCode)
@@ -97,6 +89,28 @@ namespace Store.Services.Goodses
             if (goods != null)
             {
                 throw new DuplicateNameException();
+            }
+        }
+        private void CheckingDuplicateCode(int GoodsCode)
+        {
+            var OneGoods = _goodsRepository.GetbyId(GoodsCode);
+            if (OneGoods != null)
+            {
+                throw new DuplicateGoodsCodeException();
+            }
+        }
+        private void ListisNull(HashSet<ShowgoodsDTO> goods)
+        {
+            if (goods.Count() == 0)
+            {
+                throw new ThereIsnotInformationToDisplay();
+            }
+        }
+        private void HasChild(Goods goods)
+        {
+            if (goods.GoodsInputs.Count > 0 || goods.GoodsOutputs.Count() > 0)
+            {
+                throw new GoodsHasChildrenException();
             }
         }
     }

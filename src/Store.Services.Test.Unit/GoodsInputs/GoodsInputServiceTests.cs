@@ -7,6 +7,9 @@ using Store.Persistence.EF.GoodsInputs;
 using Store.Services.GoodsInputs;
 using Store.Services.GoodsInputs.Contracts;
 using Store.Services.GoodsInputs.Exceptions;
+using Store.Test.Tools.Categories;
+using Store.Test.Tools.Goodses;
+using Store.Test.Tools.GoodsInputs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,14 +37,8 @@ namespace Store.Services.Test.Unit.GoodsInputs
         private void Adds_adds_goodsInput_properly()
         {
             var goods = generategoods();
-            AddGoodsInputDTO addGoodsInputDTO = new AddGoodsInputDTO
-            {
-                Count = 1,
-                Date = DateTime.Now.ToShortDateString(),
-                Number = 12,
-                Price = 1000,
-                GoodsCode = goods.GoodsCode,
-            };
+            AddGoodsInputDTO addGoodsInputDTO = GoodsInputFactory.CreateAddGoodsInputDTO(goods.GoodsCode, 12);
+           
             _Sut.Add(addGoodsInputDTO);
             _eFDataContext.GoodsInputs.Should().Contain(_ => _.Count.Equals(addGoodsInputDTO.Count));
             _eFDataContext.GoodsInputs.Should().Contain(_ => _.Date.ToShortDateString().Equals(addGoodsInputDTO.Date));
@@ -180,28 +177,17 @@ namespace Store.Services.Test.Unit.GoodsInputs
 
         private Goods generategoods()
         {
-            Category category = new Category()
-            {
-                Title = "لبنیات"
-            };
+            Category category = CategoryFactory.CreateCategory("لبنیات");
             _eFDataContext.Manipulate(_ => _.Categories.Add(category));
-            Goods goods = new Goods()
-            {
-                CategoryId = category.Id,
-                Cost = 1000,
-                GoodsCode = 17,
-                Inventory = 12,
-                MaxInventory = 100,
-                MinInventory = 10,
-                Name = "شیر",
-            };
+            Goods goods = GoodsFactory.CreateGoods(17, "خامه", category.Id);
             _eFDataContext.Manipulate(_ => _.Goodses.Add(goods));
             return goods;
         }
         private GoodsInput GenerateGoodsInput()
         {
             var goods = generategoods();
-            GoodsInput goodsInput = new GoodsInput()
+            GoodsInput goodsInput = GoodsInputFactory.CreateGoodsInput(goods.GoodsCode, 57);
+                new GoodsInput()
             {
                 Count = 1,
                 Date = new DateTime(2022, 2, 2),
@@ -216,13 +202,8 @@ namespace Store.Services.Test.Unit.GoodsInputs
         {
          var goods=generategoods();
 
-            return new UpdateGoodsInputDTO
-            {
-                Count = 1,
-                Date = new DateTime(2022, 2, 2,0,0,0,0).ToShortDateString(),
-                Price = 1000,
-                GoodsCode = goods.GoodsCode,
-            };
+            return GoodsInputFactory.CreateUpdateGoodsInputDTO(goods.GoodsCode);
+              
 
         }
     }

@@ -51,7 +51,7 @@ namespace Store.Specs.GoodsOutputs
             expect.Should().ThrowExactly<ThereIsnotInformationToDisplay>();
         }
         [Fact]
-        private void NotHaveRun()
+        private void Run()
         {
             Runner.RunScenario(
             _ => Given(),

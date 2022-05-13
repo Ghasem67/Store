@@ -23,11 +23,7 @@ namespace Store.Services.Categories
 
         public void Add(AddCategoryDTO addCategoryDTO)
         {
-            var OneGoods = _categoryRepository.GetByTitle(addCategoryDTO.Title);
-            if (OneGoods != null)
-            {
-                throw new DuplicateNameException();
-            }
+            CheckingDuplicateName(addCategoryDTO.Title);
             Category category = new()
             {
                 Title = addCategoryDTO.Title
@@ -38,12 +34,7 @@ namespace Store.Services.Categories
 
         public void Delete(int id)
         {
-
-            var category = CheckIsNull(id);
-            if (category.Goodses.Count()>0)
-            {
-                throw new CategoryHasChildrenException();
-            }
+          var category=  CheckHaveChild( id);
             _categoryRepository.Delete(category);
             _unitOfWork.Commit();
         }
@@ -86,6 +77,15 @@ namespace Store.Services.Categories
             {
                 throw new DuplicateNameException();
             }
+        }
+        private Category CheckHaveChild(int id)
+        {
+            var category = CheckIsNull(id);
+            if (category.Goodses.Count() > 0)
+            {
+                throw new CategoryHasChildrenException();
+            }
+            return category;
         }
     }
 }

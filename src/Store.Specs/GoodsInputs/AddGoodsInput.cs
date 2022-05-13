@@ -29,7 +29,6 @@ namespace Store.Specs.GoodsInputs
         UnitOfWork _unitOfWork;
         GoodsInputRepository goodsInputRepository;
         GoodsInputService _sut;
-        Action expect;
         public AddGoodsInput(ConfigurationFixture configuration) : base(configuration)
         {
             _dataContext = CreateDataContext();

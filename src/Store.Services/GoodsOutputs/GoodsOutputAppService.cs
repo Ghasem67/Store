@@ -39,11 +39,8 @@ namespace Store.Services.GoodsOutputs
         public void Delete(int number)
         {
 
-            var goodsInput = _repository.GetById(number);
-            if (goodsInput == null)
-            {
-                throw new GoodsOutputNotFoundException();
-            }
+            var goodsInput = CheckIsNull(number);
+            
             _repository.Delete(goodsInput);
             _unitOfWork.Commit();
         }
@@ -51,10 +48,7 @@ namespace Store.Services.GoodsOutputs
         public HashSet<ShowGoodsOutputDTO> GetAll()
         {
             var GetList= _repository.GetAll();
-            if (GetList.Count()==0)
-            {
-                throw new ThereIsnotInformationToDisplay();
-            }
+            ListisNull(GetList);
             return GetList;
         }
 
@@ -66,8 +60,6 @@ namespace Store.Services.GoodsOutputs
         public void Update(UpdateGoodsOutputDTO updateGoodsOutputDTO,int number )
         {
             var goodsoutput = CheckIsNull(number);
-
-
             //goodsoutput.Number = updateGoodsOutputDTO.Number;
             goodsoutput.GoodsCode = updateGoodsOutputDTO.GoodsCode;
             goodsoutput.Price = updateGoodsOutputDTO.Price;
@@ -102,6 +94,13 @@ namespace Store.Services.GoodsOutputs
                 throw new DuplicateFactorNumberException();
             }
             return goodsOutput;
+        }
+        private void ListisNull(HashSet<ShowGoodsOutputDTO> goodsoutput)
+        {
+            if (goodsoutput.Count == 0)
+            {
+                throw new ThereIsnotInformationToDisplay();
+            }
         }
     }
 }

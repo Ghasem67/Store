@@ -31,7 +31,6 @@ namespace Store.Specs.Goodses
         GoodsRepository goodsRyrepository;
        GoodsService _sut;
         private Goods goods;
-        Action expect;
         public DeleteGoods(ConfigurationFixture configuration) : base(configuration)
         {
             _context = CreateDataContext();

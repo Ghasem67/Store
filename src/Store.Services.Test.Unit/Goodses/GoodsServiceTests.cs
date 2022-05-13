@@ -12,7 +12,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Store.Test.Tools.Categories;
 using Xunit;
+using Store.Test.Tools.Goodses;
 
 namespace Store.Services.Test.Unit.Goodses
 {
@@ -94,7 +96,7 @@ namespace Store.Services.Test.Unit.Goodses
         private void Update_throw_goods_NotFoundException_when_goods_with_given_id_is_not_exist()
         {
             var GoodsCode = 2000;
-            var GoodsDTO = GenerateUpdateGoodsDto("editGoods");
+            var GoodsDTO = GenerateUpdateGoodsDto("لبنیات","شیر پگاه فارس");
             Action expect = () => _Sut.Update(GoodsDTO, GoodsCode);
             expect.Should().ThrowExactly<GoodsNotFoundException>();
         }
@@ -109,62 +111,29 @@ namespace Store.Services.Test.Unit.Goodses
         [Fact]
         private void Update_updates_goods_properly()
         {
-            Category Category = new Category
-            {
-                Title = "لبنیات"
-
-            };
+            Category Category = CategoryFactory.CreateCategory("لبنیات");
             _context.Manipulate(_ => _.Add(Category));
-            Goods dto1 = new Goods
-            {
-                CategoryId = _context.Categories.FirstOrDefault().Id,
-                Cost = 1000,
-                GoodsCode = 12,
-                Inventory = 10,
-                MaxInventory = 1000,
-                MinInventory = 10,
-                Name = "شیر پگاه"
-            };
-            _context.Manipulate(_ => _.Goodses.Add(dto1));
+            Goods coods = GoodsFactory.CreateGoods(12, "شیر پگاه", Category.Id);
+                
+            _context.Manipulate(_ => _.Goodses.Add(coods));
             var Goods = _context.Goodses.First();
 
-            UpdateGoodsDTO dto = new UpdateGoodsDTO
-            {
-                CategoryId = dto1.CategoryId,
-                MaxInventory = 2000,
-                MinInventory = 20,
-                Inventory = 0,
-                Name = "ماست پگاه",
-                Cost = 3000,
-            };
-            _Sut.Update(dto, dto1.GoodsCode);
-            var expect = _context.Goodses.FirstOrDefault(_ => _.GoodsCode == dto1.GoodsCode);
+            UpdateGoodsDTO dto = GoodsFactory.CreateGoodsDTO("ماست پگاه", Category.Id);
+            _Sut.Update(dto, coods.GoodsCode);
+            var expect = _context.Goodses.FirstOrDefault(_ => _.GoodsCode == coods.GoodsCode);
             expect.Name.Should().Be(dto.Name);
             expect.Cost.Should().Be(dto.Cost);
             expect.CategoryId.Should().Be(dto.CategoryId);
             expect.MaxInventory.Should().Be(dto.MaxInventory);
             expect.MinInventory.Should().Be(dto.MinInventory);
-
         }
         [Fact]
         private void Delete_delete_goods_properly()
         {
-            Category Category = new Category
-            {
-                Title = "لبنیات"
-
-            };
-            _context.Manipulate(_ => _.Add(Category));
-            Goods good = new Goods
-            {
-                CategoryId = _context.Categories.FirstOrDefault().Id,
-                Cost = 1000,
-                GoodsCode = 12,
-                Inventory = 10,
-                MaxInventory = 1000,
-                MinInventory = 10,
-                Name = "شیر پگاه"
-            };
+            Category category = CategoryFactory.CreateCategory("لبنیات");
+            _context.Manipulate(_ => _.Add(category));
+            Goods good = GoodsFactory.CreateGoods(12, "شیر پگاه", category.Id);
+            
             _context.Manipulate(_ => _.Goodses.Add(good));
             var Goods = _context.Goodses.First();
             _Sut.Delete(Goods.GoodsCode);
@@ -174,44 +143,13 @@ namespace Store.Services.Test.Unit.Goodses
         [Fact]
         private void GetAll_getalls_goods_properly()
         {
-            Category Category = new Category
-            {
-                Title = "لبنیات"
-            };
+            Category Category =CategoryFactory.CreateCategory("لبنیات");
             _context.Manipulate(_ => _.Add(Category));
-            List<Goods> goodslist = new List<Goods>
-            {
-              new Goods
-            {
-                CategoryId = _context.Categories.FirstOrDefault().Id,
-                Cost = 1000,
-                GoodsCode = 13,
-                Inventory = 10,
-                MaxInventory = 1000,
-                MinInventory = 10,
-                Name = "شیر پگاه"
-            },
-                new Goods
-            {
-                CategoryId = _context.Categories.FirstOrDefault().Id,
-                Cost = 1000,
-                GoodsCode = 14,
-                Inventory = 10,
-                MaxInventory = 1000,
-                MinInventory = 10,
-                Name = "شیر رامک"
-            },
-                 new Goods
-            {
-                CategoryId = _context.Categories.FirstOrDefault().Id,
-                Cost = 1000,
-                GoodsCode = 15,
-                Inventory = 10,
-                MaxInventory = 1000,
-                MinInventory = 10,
-                Name = "شیر دامداران"
-            }
-        };
+            List<Goods> goodslist = new List<Goods>();
+           goodslist.Add(GoodsFactory.CreateGoods(13, "شیر پگاه", _context.Categories.FirstOrDefault().Id));
+           goodslist.Add(GoodsFactory.CreateGoods(14, "شیر رامک", _context.Categories.FirstOrDefault().Id));
+           goodslist.Add(GoodsFactory.CreateGoods(15, "شیر دامداران", _context.Categories.FirstOrDefault().Id));
+           
             _context.Manipulate(_ => _.Goodses.AddRange(goodslist));
             var except = _Sut.GetAll();
             except.Should().HaveCount(3);
@@ -242,22 +180,9 @@ namespace Store.Services.Test.Unit.Goodses
         [Fact]
         private void GetById_getByIds_goods_properly()
         {
-            Category Category = new Category
-            {
-                Title = "لبنیات"
-            };
+            Category Category = CategoryFactory.CreateCategory("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(Category));
-
-            Goods goods = new Goods
-            {
-                CategoryId = _context.Categories.FirstOrDefault().Id,
-                Cost = 1000,
-                GoodsCode = 13,
-                Inventory = 10,
-                MaxInventory = 1000,
-                MinInventory = 10,
-                Name = "شیر پگاه"
-            };
+            Goods goods = GoodsFactory.CreateGoods(13, "شیر پگاه", _context.Categories.FirstOrDefault().Id);
             _context.Manipulate(_ => _.Goodses.Add(goods));
             var except = _Sut.GetbyId(goods.GoodsCode);
             except.Should().NotBeNull();
@@ -269,23 +194,12 @@ namespace Store.Services.Test.Unit.Goodses
             except.Inventory.Should().Be(goods.Inventory);
             except.Cost.Should().Be(goods.Cost);
         }
-        private UpdateGoodsDTO GenerateUpdateGoodsDto(string title)
+        private UpdateGoodsDTO GenerateUpdateGoodsDto(string title,string name)
         {
-            Category Category = new Category
-            {
-                Title = "لبنیات"
-
-            };
+            Category Category = CategoryFactory.CreateCategory("لبنیات");
             _context.Manipulate(_ => _.Categories.Add(Category));
-           return new UpdateGoodsDTO
-            {
-               CategoryId= Category.Id,
-               Cost=1000,
-               Inventory=12,
-               Name="شیر",
-               MaxInventory=30,
-               MinInventory=10
-            };
+            return GoodsFactory.CreateGoodsDTO(name, Category.Id);
+          
 
         }
     }

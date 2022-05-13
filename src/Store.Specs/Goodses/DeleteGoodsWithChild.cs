@@ -92,7 +92,7 @@ namespace Store.Specs.Goodses
             expect.Should().ThrowExactly<GoodsHasChildrenException>();
         }
         [Fact]
-        private void DuplicateRun()
+        private void Run()
         {
             Runner.RunScenario(
                 _ => Given()

@@ -48,10 +48,7 @@ namespace Store.Services.GoodsInputs
         public HashSet<ShowGoodsInputDTO> GetAll()
         {
             var goodsinput= _goodsInputRepository.GetAll();
-            if (goodsinput.Count==0)
-            {
-                throw new ThereIsnotInformationToDisplay();
-            }
+            ListisNull(goodsinput);
             return goodsinput;
         }
 
@@ -63,7 +60,6 @@ namespace Store.Services.GoodsInputs
         public void Update(UpdateGoodsInputDTO updateGoodsInputDTO,int Number)
         {
          var goodsInput=  CheckIsNull(Number);
-            CheckDuplicate(updateGoodsInputDTO.Number);
             //goodsInput.Number = updateGoodsInputDTO.Number;
            goodsInput.GoodsCode = updateGoodsInputDTO.GoodsCode;
             goodsInput.Price = updateGoodsInputDTO.Price;
@@ -96,6 +92,13 @@ namespace Store.Services.GoodsInputs
             if (goodsInput != null)
             {
                 throw new DuplicateFactorNumberException();
+            }
+        }
+        private void ListisNull(HashSet<ShowGoodsInputDTO> goodsinput)
+        {
+            if (goodsinput.Count == 0)
+            {
+                throw new ThereIsnotInformationToDisplay();
             }
         }
     }

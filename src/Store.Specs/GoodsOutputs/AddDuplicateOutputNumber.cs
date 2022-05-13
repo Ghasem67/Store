@@ -88,7 +88,7 @@ namespace Store.Specs.GoodsOutputs
             expect.Should().ThrowExactly<DuplicateFactorNumberException>();
         }
         [Fact]
-        private void DuplicateRun()
+        private void Run()
         {
             Runner.RunScenario(
                 _ => Given(),
